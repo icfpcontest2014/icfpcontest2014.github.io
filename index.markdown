@@ -30,5 +30,9 @@ In addition, the organisers will declare during the conference that:
 * the team winning the judges’ prize is “an extremely cool bunch of hackers”.
 
 Additional announcements will be made at [http://icfpcontest.org/](http://icfpcontest.org/), including
-the rules and details of the task.
+the rules and details of the task. The task will be made available
+when the contest starts.
 
+The contest organisers are: Nicolas Wu (co-chair), Duncan Coutts
+(co-chair), Richard Evans, Martin Lester, José Pedro Magalhães, and
+Marcelo Sousa.
