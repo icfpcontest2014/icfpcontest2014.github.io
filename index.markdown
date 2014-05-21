@@ -1,32 +1,34 @@
 ---
 title: Home
 ---
-Welcome to the official ICFP Programming Contest 2014 site!
-
 The ICFP Programming Contest 2014 is the 17th instance of the annual
 programming contest series sponsored by The ACM SIGPLAN International
-Conference on Functional Programming
+Conference on Functional Programming.
 
-Contestants will be assigned a programming task and will have 72 hours
-to complete it using any programming languages and tools they wish.
-There will also be a "lightning division", with entries submitted
-after 24 hours.
+This year, the contest starts on [Friday 25 July 2014 at 12:00 UTC](http://www.timeanddate.com/countdown/generic?p0=1440&iso=20140725T12&msg=ICFP%20Programming%20Contest%202014) and
+ends on Monday 28 July 2014 at 12:00 UTC. There will be a lightning
+division, ending on Saturday 26 July 2014 at 12:00 UTC.
 
-This year, the contest starts at
-12:00 July 25 Friday UTC and ends at 12:00 July 28 Monday UTC. There will be a
-lightning division, ending at 12:00 July 26 Saturday UTC.
+This is an open contest. Anybody may participate except for the contest
+organisers and members of the same group as the the contest chairs. No advance
+registration or entry fee is required. Contestants are free to organize
+themselves into teams of any size.
 
-Contestants are free to organize themselves into teams of any size.
-The contest will be conducted entirely over the Internet---there is no
-physical venue.
-No pre-registration is required.
+Any programming language(s) on any platform(s) may be used.
 
-The winning team will enjoy eternal fame and their programming tool
-will be proclaimed "the tool of choice for discriminating hackers."
+There will be cash prizes for the first and second place teams, the team
+winning the lightning divison, and a discretionary judges’ prize. There may
+also be travel support for the winning teams to attend the conference.
 
-For more information about the contest, [Wikipedia](http://en.wikipedia.org/wiki/ICFP_Programming_Contest).
+In addition, the organisers will declare during the conference that:
 
+* the first place team’s language is “the programming language of choice for
+  discriminating hackers”,
+* the second place team’s language is “a fine tool for many applications”,
+* the winning lightning division team’s language is “very suitable for rapid
+  prototyping”, and
+* the team winning the judges’ prize is “an extremely cool bunch of hackers”.
 
-
-
+Additional announcements will be made at [http://icfpcontest.org/](http://icfpcontest.org/), including
+the rules and details of the task.
 
