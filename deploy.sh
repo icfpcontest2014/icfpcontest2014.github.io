@@ -5,5 +5,6 @@ cd _site
 git status
 git add --all
 git commit -m "snapshot $NOW"
+git branch -f master HEAD
 git push origin master
 
