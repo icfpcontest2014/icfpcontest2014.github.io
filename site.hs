@@ -5,7 +5,7 @@ import           Hakyll
 
 --------------------------------------------------------------------------------
 main :: IO ()
-main = hakyll $ do
+main = hakyllWith config $ do
     match "templates/*" $ compile templateCompiler
 
     match "stylesheets/*" $ do
@@ -22,3 +22,6 @@ main = hakyll $ do
             >>= loadAndApplyTemplate "templates/default.html" defaultContext
             >>= relativizeUrls
 
+
+config :: Configuration
+config = defaultConfiguration { deployCommand = "./deploy.sh" }
