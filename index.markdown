@@ -8,8 +8,10 @@ News
 * The contest starts in <iframe src="http://free.timeanddate.com/countdown/i494s4lr/n1440/cf11/cm0/cu4/ct4/cs0/ca0/co0/cr0/ss0/cacfff/cpcf00/pct/tcfff/fn3/fs80/szw320/szh135/iso2014-07-25T12:00:00" frameborder="0" width="240" height="16"></iframe>.
 Time to stock up on food and drink; don't forget to buy plenty of fruit!
 
+
 Welcome
 -------
+
 The ICFP Programming Contest 2014 is the 17th instance of the annual
 programming contest series sponsored by The ACM SIGPLAN International
 Conference on Functional Programming.
@@ -38,10 +40,23 @@ In addition, the organisers will declare during the conference that:
   prototyping”, and
 * the team winning the judges’ prize is “an extremely cool bunch of hackers”.
 
+
+Contact
+-------
+
 Additional announcements will be made at [http://icfpcontest.org/](http://icfpcontest.org/), including
 the rules and details of the task. The task will be made available
 when the contest starts.
 
-The contest organisers are: Nicolas Wu (co-chair), Duncan Coutts
-(co-chair), Richard Evans, Martin Lester, José Pedro Magalhães, and
-Marcelo Sousa.
+The official Twitter account is [\@ICFPContest2014](https://twitter.com/ICFPContest2014).
+
+You can find us on the #icfp-contest IRC channel on Freenode. You can even chat
+in your browser using the following link:
+
+[http://webchat.freenode.net/?channels=icfp-contest](http://webchat.freenode.net/?channels=icfp-contest)
+
+The contest organisers are: Nicolas Wu (co-chair) (zenzike), Duncan Coutts
+(co-chair) (dcoutts), José Pedro Magalhães (dreixel), Richard Evans,
+Martin Lester (mariusz), and Marcelo Sousa (mabs).
+
+You can also reach us privately by email: [icfpcontest2014-pub@googlegroups.com](mailto:icfpcontest2014-pub@googlegroups.com)
