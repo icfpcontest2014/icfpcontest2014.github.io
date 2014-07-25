@@ -79,7 +79,7 @@ Lightning Round Summary
 For the lightning round we will play the "classic" version of the game where it
 is just a single Lambda-Man against the ghosts.
 
-Your challenge is is to write an AI for the Lambda-Man. It will play against
+Your challenge is to write an AI for the Lambda-Man. It will play against
 ghost AIs supplied by the judges and in mazes supplied by the judges.
 
 You will be supplied with several of the mazes and with the assembly code for
