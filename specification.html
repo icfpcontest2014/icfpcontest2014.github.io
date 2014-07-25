@@ -53,7 +53,7 @@
 <ul>
 <li><a href="reference.html">http://icfpcontest.org/reference.html</a></li>
 </ul>
-<p>This site also contains other refence material that you might find useful, such as sample maps.</p>
+<p>This site also contains other reference material that you might find useful, such as sample maps.</p>
 <p>If you find any discrepancies between this specification document and the reference implementation (or other material), then please let the judges know as soon as possible!</p>
 <h1 id="the-lambda-man-game-rules">The Lambda-Man game rules</h1>
 <h2 id="objectives">Objectives</h2>
@@ -307,7 +307,7 @@
 </tr>
 </tbody>
 </table>
-<p>The Lambda-Man and ghosts move at different speeds. Lambda-Man moves slower when he is eating, and the ghosts move slower when they are in fright mode. All moves are at regular intervals, based on their <em>ticks per move</em> value which is described below. For example, the first Lambda-Man move occurs at tick 127, the second at tick 254, and so on.</p>
+<p>The Lambda-Man and ghosts move at different speeds. Lambda-Man moves slower when he is eating (pills, power pills or fruit), and the ghosts move slower when they are in fright mode. All moves are at regular intervals, based on their <em>ticks per move</em> value which is described below. For example, the first Lambda-Man move occurs at tick 127, the second at tick 254, and so on.</p>
 <table>
 <thead>
 <tr class="header">
@@ -358,6 +358,8 @@
 </tr>
 </tbody>
 </table>
+<p>On a tick when Lambda-Man or a ghost is scheduled to move, their next move is scheduled for the appropirate number of ticks in the future, depending on their current state. For example if Lambda-Man moves into a square with a pill then the next tick on which he will move will be his previous scheduled tick number plus 137.</p>
+<p>No other event or condition resets the scheduled tick for Lambda-Man or the ghosts (not even entering fright mode, ghosts being eaten, or Lambda-Man being eaten).</p>
 <h2 id="movement">Movement</h2>
 <p>The Lambda-Man can move into any adjacent square that is not occupied by a wall. An adjacent square is one that is up, down, left, or right of another.</p>
 <p>When Lambda-Man tries to choose an illegal move, he stops moving.</p>
@@ -563,7 +565,7 @@ Vitality:
 <li>Register <code>A</code>: contents of map square</li>
 </ul></li>
 </ul>
-<p>Stores the contents of map square with index read from registers <code>A</code> (x-ordinate) and <code>B</code> (y-ordinate) in register <code>A</code>. If the co-ordinates lie outside the defined bounds of the map, stores 0.</p>
+<p>Stores the current contents of map square with index read from registers <code>A</code> (x-ordinate) and <code>B</code> (y-ordinate) in register <code>A</code>. If the co-ordinates lie outside the defined bounds of the map, stores 0.</p>
 Contents:
 <ul>
 <li>0: Wall (<code>#</code>)</li>
@@ -668,7 +670,7 @@ hlt            ; Stop.</code></pre>
 <p>(We believe in the real hardware this feature was implemented in microcode, with internal registers to cache the outermost frame and a fixed number of the inner most frames for quick access).</p>
 <h2 id="data-heap-and-data-values">Data heap and data values</h2>
 <p>The machine makes extensive use of dynamic allocations and has built-in support for a garbage collected data heap. Values in the data stack and in environment frames can be pointers into the heap.</p>
-<p>There are three types of data value: integers, pairs and closures. Integers are represented in the usual way as binary signed integers. Pairs and closures are represented by pointers to objects in the data heap. The three types of values are distinguished by tag bits. The tag bits are not software visible (except for the <code>ATOM</code> instruction) but are used by the hardware for error checking.</p>
+<p>There are three types of data value: integers, pairs and closures. Integers are represented in the usual way as binary signed 32-bit integers. Pairs and closures are represented by pointers to objects in the data heap. The three types of values are distinguished by tag bits. The tag bits are not software visible (except for the <code>ATOM</code> instruction) but are used by the hardware for error checking.</p>
 <p>There are three instructions for manipulating pairs: allocating a pair, accessing the first and accessing the second component of a pair.</p>
 <p>All program data structures have to be represented using combinations of pairs and integers (and sometimes closures).</p>
 <h1 id="instruction-reference-1">Instruction reference</h1>
@@ -1361,7 +1363,7 @@ step:
 <p>We can see from the code that it also (pointlessly) maintains an integer state (starting from 42) and increments it on every step.</p>
 <h2 id="resource-constraints">Resource constraints</h2>
 <p>The Lambda-Man CPU had a clock speed of 3.072 MHz. Each processor cycle executed exactly one instruction, and each invocation of the Lambda-Man AI was allowed to run for one second before a move was made. In addition, the Lambda-Man AI was given one minute of time for initialization, before the game began.</p>
-<p>From this it follows that each invocation of the AI before a move was allowed to run up to 3072 * 10^3 instructions. We assume that taking any more instructions than this would result in catastrophic failure.</p>
+<p>From this it follows that each invocation of the AI, before a move, was allowed to run up to 3072 * 10^3 instructions. We assume that taking any more instructions than this would result in catastrophic failure.</p>
 <p>The main RAM was—for its time—impressively large, and was able to hold 10 million CONS cells to be used by the Lambda-Man AI in the heap. Again, trying to allocate memory over this limit resulted in an error, probably results in catastrophic failure.</p>
 <h2 id="errors-1">Errors</h2>
 <p>During the game, if an instruction causes an error then execution halts and no result is returned. In this case Lambda-Man’s requested move will be the same as its previous move.</p>
