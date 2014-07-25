@@ -1799,7 +1799,7 @@ Your submission file (.zip or .tar.gz) should have the following format:
 
  * Subdirectory `code`  with the source code you wrote to help you prepare
    your solution and any auxiliary material that can be helpful to the judges
-   to build your code. You should include a `README` file here with any
+   to build your code. You should include a `README` file in this subdirectory with any
    documentation/description of your solution that you wish to share with the
    judges.
 
