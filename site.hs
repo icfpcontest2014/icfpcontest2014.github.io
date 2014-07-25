@@ -19,7 +19,8 @@ main = hakyllWith config $ do
                     , "images/bkg.png"
                     , "images/blacktocat.png"
                     , "lman.html"
-                    , "game.html"]) $ do
+                    , "game.html"
+                    , "code/local.gcc"]) $ do
         route   idRoute
         compile copyFileCompiler
 
