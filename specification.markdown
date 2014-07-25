@@ -325,14 +325,14 @@ Event               | Ticks per move
 ------------------- | --------------
 Lambda-Man          | 127
 Lambda-Man (eating) | 137
-Ghost 1             | 130
-Ghost 2             | 132
-Ghost 3             | 134
-Ghost 4             | 136
-Ghost 1 (fright)    | 195
-Ghost 2 (fright)    | 198
-Ghost 3 (fright)    | 201
-Ghost 4 (fright)    | 204
+Ghost 0             | 130
+Ghost 1             | 132
+Ghost 2             | 134
+Ghost 3             | 136
+Ghost 0 (fright)    | 195
+Ghost 1 (fright)    | 198
+Ghost 2 (fright)    | 201
+Ghost 3 (fright)    | 204
 
 On a tick when Lambda-Man or a ghost is scheduled to move, their next move is
 scheduled for the appropriate number of ticks in the future, depending on their
@@ -341,7 +341,7 @@ the next tick on which he will move will be his previous scheduled tick number
 plus 137.
 
 When there are more than 4 ghosts, these ticks-per-move values are assigned
-cyclically, such that ghost 5 takes on the values of ghost 1, and so on.
+cyclically, such that ghost 4 takes on the values of ghost 0, and so on.
 
 No other event or condition resets the scheduled tick for Lambda-Man or the
 ghosts (not even entering fright mode, ghosts being eaten, or Lambda-Man being
@@ -420,16 +420,16 @@ assigned as follows:
 
 Ghost   | AI Program
 ------- | ----------
-ghost 1 | program 1
-ghost 2 | program 2
-ghost 3 | program 1
-ghost 4 | program 2
+ghost 0 | program 1
+ghost 1 | program 2
+ghost 2 | program 1
+ghost 3 | program 2
 
 The order of ghosts is in increasing order of their starting coordinates, where
 `(x1, y1)` is considered smaller than `(x2, y2)` if `y1 < y2` or if `y1 = y2` and
 `x1 < x2`.
 
-The system allows at most 4 ghost programs (but up to 256 ghosts).
+The system allows at most 4 ghost programs (but up to 256 ghosts, numbered 0-255).
 
 
 GHost CPU (GHC)
@@ -662,6 +662,7 @@ In the LamCo architecture, the following interrupts are standard:
     
     For the ghost with index read from register `A`, stores its starting
     position in registers `A` (x-ordinate) and `B` (y-ordinate).
+    If `A` is not a valid ghost index, does nothing.
 
  *  `INT 5`
     
@@ -673,6 +674,7 @@ In the LamCo architecture, the following interrupts are standard:
     
     For the ghost with index read from register `A`, stores its current
     position in registers `A` (x-ordinate) and `B` (y-ordinate).
+    If `A` is not a valid ghost index, does nothing.
 
  *  `INT 6`
     
@@ -689,6 +691,8 @@ In the LamCo architecture, the following interrupts are standard:
       * 0: standard;
       * 1: fright mode;
       * 2: invisible.
+
+    If `A` is not a valid ghost index, does nothing.
     
  *  `INT 7`
     
