@@ -259,7 +259,7 @@ a {
 textarea {
   background-color: black;
   color: white;
-  font-family: "Courier New";
+  font-family: "Courier New", monospace;
 }
 
 #buttons {
