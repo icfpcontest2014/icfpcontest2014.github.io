@@ -5,6 +5,7 @@ title: Home
 News
 ----
 
+* We have an [FAQ](#faq.html).
 * The contest has started! The task specification is available [here](specification.html).
 
 
