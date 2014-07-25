@@ -10,6 +10,7 @@ GCC Programs
 ------------
 
 * [local.gcc](code/local.gcc)
+* [goto.gcc](code/goto.gcc)
 
 Maps
 ------------
