@@ -325,20 +325,23 @@ Event               | Ticks per move
 ------------------- | --------------
 Lambda-Man          | 127
 Lambda-Man (eating) | 137
-Ghost AI 1          | 130
-Ghost AI 2          | 132
-Ghost AI 3          | 134
-Ghost AI 4          | 136
-Ghost AI 1 (fright) | 195
-Ghost AI 2 (fright) | 198
-Ghost AI 3 (fright) | 201
-Ghost AI 4 (fright) | 204
+Ghost 1             | 130
+Ghost 2             | 132
+Ghost 3             | 134
+Ghost 4             | 136
+Ghost 1 (fright)    | 195
+Ghost 2 (fright)    | 198
+Ghost 3 (fright)    | 201
+Ghost 4 (fright)    | 204
 
 On a tick when Lambda-Man or a ghost is scheduled to move, their next move is
-scheduled for the appropirate number of ticks in the future, depending on their
+scheduled for the appropriate number of ticks in the future, depending on their
 current state. For example if Lambda-Man moves into a square with a pill then
 the next tick on which he will move will be his previous scheduled tick number
 plus 137.
+
+When there are more than 4 ghosts, these ticks-per-move values are assigned
+cyclically, such that ghost 5 takes on the values of ghost 1, and so on.
 
 No other event or condition resets the scheduled tick for Lambda-Man or the
 ghosts (not even entering fright mode, ghosts being eaten, or Lambda-Man being
