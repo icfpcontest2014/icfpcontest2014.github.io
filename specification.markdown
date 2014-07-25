@@ -1322,8 +1322,8 @@ Tail call extensions
       $e := CDR_CLOSURE($x)
       $fp := ALLOC_FRAME($n)      ; create a new frame for the call
       FRAME_PARENT($fp) := $e
-      $i := $n
-      while $i != 0 do            ; copy n values from the stack into the frame in reverse order
+      $i := $n-1
+      while $i != -1 do            ; copy n values from the stack into the frame in reverse order
       begin
         $y,%s := POP(%s)
         FRAME_VALUE($fp,$i) := $y
@@ -1355,10 +1355,10 @@ Tail call extensions
       if TAG($x) != TAG_CLOSURE then FAULT(TAG_MISMATCH)
       $f := CAR_CLOSURE($x)
       $fp := CDR_CLOSURE($x)
-      if TAG(%e) != TAG_DUM then FAULT(FRAME_MISMATCH)
-      if FRAME_SIZE(%e) != $n then FAULT(FRAME_MISMATCH)
-      $i := $n
-      while $i != 0 do            ; copy n values from the stack into the empty frame in reverse order
+      if TAG($fp) != TAG_DUM then FAULT(FRAME_MISMATCH)
+      if FRAME_SIZE($fp) != $n then FAULT(FRAME_MISMATCH)
+      $i := $n-1
+      while $i != -1 do            ; copy n values from the stack into the empty frame in reverse order
       begin
         $y,%s := POP(%s)
         FRAME_VALUE($fp,$i) := $y
