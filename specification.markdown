@@ -462,21 +462,21 @@ as described in the section [Code Format](#code-format).
 The contents of the code memory does not change during a game.
 All data memory locations and all registers are initialised to 0.
 
-During each game cycle, the GHC runs the program, executing up to 1024 instructions:
-the game cycle is divided into 1024 execution cycles.
-At the start of each game cycle, the PC is initialised to 0.
-An execution cycle begins with the GHC reading the instruction at the address
-referenced by the PC from code memory.
-It executes the instruction, as described in the section
-[Instruction Reference](#instructionReference),
-possibly changing the contents of the data memory and registers.
-At the end of the execution cycle, if the value of the PC is the same as it was
-at the start of the execution cycle, the GHC increments it.
-Execution terminates at the end of an execution cycle if:
-the instruction executed was HLT;
-it was the 1024th execution cycle of the game cycle;
-or execution of the instruction caused an error.
-The contents of the data memory and registers persist between game cycles.
+On a game tick when ghost is scheduled to move, the GHC runs the program, executing up to 1024 instructions:
+
+ * At the start of program execution, the PC is initialised to 0.
+ * An instruction cycle begins with the GHC reading the instruction at the address
+   referenced by the PC from code memory.
+ * It executes the instruction, as described in the section
+   [Instruction Reference](#instructionReference),
+   possibly changing the contents of the data memory and registers.
+ * At the end of the instruction cycle, if the value of the PC is the same as it was
+   at the start of the instruction cycle, the GHC increments it.
+ * Execution terminates at the end of an instruction cycle if:
+    * the instruction executed was HLT;
+    * it was the 1024th instruction executed;
+    * or execution of the instruction caused an error.
+ * The contents of the data memory and registers persist between game ticks.
 
 ## Code Format
 
