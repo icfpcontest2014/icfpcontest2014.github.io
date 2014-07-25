@@ -1,5 +1,5 @@
 ---
-title: Reference material
+title: Reference Material
 ---
 
 * [The Game mechanics](game.html)
