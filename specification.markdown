@@ -123,7 +123,7 @@ game rules and the Lambda-Man processor.
 
 * [http://icfpcontest.org/reference.html](reference.html)
 
-This site also contains other refence material that you might find
+This site also contains other reference material that you might find
 useful, such as sample maps.
 
 If you find any discrepancies between this specification document and the
@@ -312,7 +312,7 @@ Event                | Ticks duration
 Fright mode duration | 127 * 20
 
 The Lambda-Man and ghosts move at different speeds. Lambda-Man moves
-slower when he is eating, and the ghosts move slower when
+slower when he is eating (pills, power pills or fruit), and the ghosts move slower when
 they are in fright mode. All moves are at regular intervals, based on
 their _ticks per move_ value which is described below. For example, the
 first Lambda-Man move occurs at tick 127, the second at tick 254, and
@@ -330,6 +330,16 @@ Ghost AI 1 (fright) | 195
 Ghost AI 2 (fright) | 198
 Ghost AI 3 (fright) | 201
 Ghost AI 4 (fright) | 204
+
+On a tick when Lambda-Man or a ghost is scheduled to move, their next move is
+scheduled for the appropirate number of ticks in the future, depending on their
+current state. For example if Lambda-Man moves into a square with a pill then
+the next tick on which he will move will be his previous scheduled tick number
+plus 137.
+
+No other event or condition resets the scheduled tick for Lambda-Man or the
+ghosts (not even entering fright mode, ghosts being eaten, or Lambda-Man being
+eaten).
 
 ## Movement
 
@@ -682,7 +692,7 @@ In the LamCo architecture, the following interrupts are standard:
     * Out:
         * Register `A`: contents of map square
     
-    Stores the contents of map square with index read from registers `A`
+    Stores the current contents of map square with index read from registers `A`
     (x-ordinate) and `B` (y-ordinate) in register `A`.
     If the co-ordinates lie outside the defined bounds of the map, stores 0.
 
@@ -886,7 +896,7 @@ for a garbage collected data heap. Values in the data stack and in environment
 frames can be pointers into the heap. 
 
 There are three types of data value: integers, pairs and closures. Integers are
-represented in the usual way as binary signed integers. Pairs and closures are
+represented in the usual way as binary signed 32-bit integers. Pairs and closures are
 represented by pointers to objects in the data heap. The three types of values
 are distinguished by tag bits. The tag bits are not software visible (except
 for the `ATOM` instruction) but are used by the hardware for error checking.
@@ -1684,7 +1694,7 @@ the Lambda-Man AI was allowed to run for one second before a move was made.
 In addition, the Lambda-Man AI was given one minute of time for initialization,
 before the game began.
 
-From this it follows that each invocation of the AI before a move was allowed
+From this it follows that each invocation of the AI, before a move, was allowed
 to run up to 3072 * 10^3 instructions. We assume that taking any more
 instructions than this would result in catastrophic failure.
 
