@@ -1172,7 +1172,7 @@ Instruction reference
               set the frame's parent to be the environment frame pointer
                 from the CLOSURE cell;
               fill the frame's body with $n values from the data stack;
-              save the stack pointer, environment pointer and return address
+              save the environment pointer and return address
                 to the control stack;
               set the current environment frame pointer to the new frame;
               jump to the code address from the CLOSURE cell;
@@ -1244,8 +1244,8 @@ Instruction reference
               the current environment frame pointer must point to an empty
                 frame of size $n;
               fill the empty frame's body with $n values from the data stack;
-              save the stack pointer, parent pointer of the current environment
-                 frame and return address to the control stack;
+              save the parent pointer of the current environment frame
+                 and return address to the control stack;
               set the current environment frame pointer to the environment
                 frame pointer from the CLOSURE cell;
               jump to the code address from the CLOSURE cell;
@@ -1355,8 +1355,8 @@ Tail call extensions
       if TAG($x) != TAG_CLOSURE then FAULT(TAG_MISMATCH)
       $f := CAR_CLOSURE($x)
       $fp := CDR_CLOSURE($x)
-      if TAG($fp) != TAG_DUM then FAULT(FRAME_MISMATCH)
-      if FRAME_SIZE($fp) != $n then FAULT(FRAME_MISMATCH)
+      if TAG(%e) != TAG_DUM then FAULT(FRAME_MISMATCH)
+      if FRAME_SIZE(%e) != $n then FAULT(FRAME_MISMATCH)
       $i := $n
       while $i != 0 do            ; copy n values from the stack into the empty frame in reverse order
       begin
@@ -1364,7 +1364,6 @@ Tail call extensions
         FRAME_VALUE($fp,$i) := $y
         $i := $i-1
       end
-      $fpp := FRAME_PARENT($fp)
       %e := $fp                   ; establish new environment
       %c := $f                    ; jump to function
     Notes:
