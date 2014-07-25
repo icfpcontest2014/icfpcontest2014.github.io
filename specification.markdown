@@ -172,6 +172,7 @@ The world is entirely deterministic, and runs on a tick-by-tick basis.
 On each tick:
 
 1. All Lambda-Man and ghost moves scheduled for this tick take place.
+   The next move is also scheduled at this point.
    (Note that Lambda-Man and the ghosts do not move every tick, only every few
    ticks; see the [ticks section](#ticks) below.)
 
