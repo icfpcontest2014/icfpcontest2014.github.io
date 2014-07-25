@@ -403,7 +403,9 @@ non-wall squares.
 
 Maps have walls around the edges.
 
-Every pill in a map is accessible.
+Every pill, power pill and fruit in a map is accessible.
+
+Maps have one and only one fruit location.
 
 The maps vary in size and in the number of ghosts and power pills. Easy maps
 will be smaller, with fewer ghosts and a higher density of power pills. Harder
