@@ -1208,7 +1208,7 @@ Instruction reference
 
     Synopsis: pop a return address and environment frame
                 pointer off of the control stack;
-              restore the stack and environment;
+              restore the environment;
               jump to the return address
     Syntax:  RTN
     Effect:
