@@ -1,0 +1,1387 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <title></title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <link rel="stylesheet" href="stylesheet.css" type="text/css" />
+</head>
+<body>
+<h1 id="introduction">Introduction</h1>
+<p>For this year’s ICFP programming contest we thought it would be fun to do a bit of ’80s software and hardware archaeology. We just so happen (via friends of friends and bankruptcy asset sales) to have got our hands on a bunch of internal documents from <em>LamCo</em>. Back in the ’80s, LamCo were a failed manufacturer of arcade games. You’ve probably never heard of them because they never managed to get a product out and were beaten by their better known rivals.</p>
+<p>What we’ve found from the cache of documents is that they had some rather interesting technology. We also found that they had a spectacularly dysfunctional development process marked by bitter internal rivalries, which we suspect goes a long way to explain their failed projects.</p>
+<p>So the contest task involves delving into LamCo’s quirky old software and hardware technology, reconstructing the arcade hardware in simulation, and writing software for the arcade platform to play the game—and to play it better than your rivals!</p>
+<h2 id="the-history-weve-uncovered">The History We’ve Uncovered</h2>
+<p>LamCo were building an arcade game where you control a little character called “Lambda-Man” who runs around in a maze eating pills and evading ghosts. The game bears a striking resemblance to another well known arcade game. We don’t know exactly why they ended up being so similar, though we rather suspect LamCo of stealing ideas from their more successful rival. For reasons best known to themselves, LamCo decided to make a two player version of their game where two Lambda-Man characters battle it out to swipe the most pills from under the noses of the ghosts. Because they also wanted to have a one player mode they found that they needed an AI to play the opposing Lambda-Man. This and the usual pressure to meet tight deadlines led to a catastrophic decision by The Management to force two rival engineering teams to work together on the project. The Management got one team to work on the ghost AIs and game mechanics and another team to work on the Lambda-Man AI. The Management claimed this was because they wanted to be proactive not reactive with their blue-sky thinking on this mission critical project, and believed this to be a win-win situation, harvesting low-hanging fruit with client focused deliverables. Because of time pressure and The Management, each team was allowed to use their favourite technology stack and the plan was to integrate it all together at the end. The ghost and game mechanics team were led by engineers who seemed to believe that 8-bit microprocessors are the be all and end all of computing. The Lambda-Man AI team were led by engineers obsessed with LISP and all its arcanery.</p>
+<p>Of course the end product ended up reflecting the teams that had built it. The main motherboard had several 8-bit microcontrollers to implement the ghost AIs and the game mechanics. It also had a customised coprocessor for running the Lambda-Man AI. The software also reflected the different teams’ philosophies: the ghost AIs and game mechanics were written directly in assembly while the Lambda-Man AI was written in some dialect of LISP.</p>
+<p>We don’t know exactly why the project failed. It could have been schedule slippage from integrating the different technologies, infighting between the two teams, the horrendous bill of materials or all of the above. But surely not The Management. All we know for sure is that the project was ultimately cancelled and LamCo filed for bankruptcy.</p>
+<h1 id="summary-of-the-task">Summary of the Task</h1>
+<p>According to the engineers’ notes that we’ve found, they did manage to get working hardware and software before the project was cancelled. Unfortunately we have not been able to recover the original software, but we do have fairly detailed design notes on the hardware.</p>
+<p>So far we (that is, the judges) have a software simulation of the arcade hardware. What we want you to do is to write the software to run on the arcade hardware.</p>
+<h2 id="lightning-round-summary">Lightning Round Summary</h2>
+<p>For the lightning round we will play the “classic” version of the game where it is just a single Lambda-Man against the ghosts.</p>
+<p>Your challenge is is to write an AI for the Lambda-Man. It will play against ghost AIs supplied by the judges and in mazes supplied by the judges.</p>
+<p>You will be supplied with several of the mazes and with the assembly code for a few (not very smart) ghost AIs.</p>
+<p>The lightning round runs for the first 24 hours of the competition, so submissions must be in before <a href="http://www.timeanddate.com/countdown/generic?p0=1440&amp;iso=20140726T12&amp;msg=ICFP%20Programming%20Contest%202014%20Lightning%20Round">12:00 UTC 26/07/2014</a>.</p>
+<h2 id="full-round-summary">Full Round Summary</h2>
+<p>The full round will be broadly the same as the lightning round, but with a twist. The details will be made available at the end of the lightning round. Check the front page for the link once the lightning round has closed.</p>
+<p>The full round runs for the full 72 hours of the competition, so submissions must be in before <a href="http://www.timeanddate.com/countdown/generic?p0=1440&amp;iso=20140728T12&amp;msg=ICFP%20Programming%20Contest%202014%20Full%20Round">12:00 UTC 28/07/2014</a>.</p>
+<h2 id="the-rest-of-this-spec">The Rest of this Spec</h2>
+<p>In the remainder of this spec, you will find:</p>
+<ul>
+<li><p>The complete description of the <a href="#the-lambda-man-game-rules">Lambda-Man game rules</a>;</p></li>
+<li><p>The details of <a href="#scoring">how your solution will be scored</a>;</p></li>
+<li><p>The description of the <a href="#ghost-cpu-ghc">microcontroller used for the ghost AIs</a>;</p></li>
+<li><p>The description of the <a href="#lambda-man-cpu">processor used for the Lambda-Man AI</a>;</p></li>
+<li><p>Details on <a href="#submission-procedure">how to submit your solution</a>.</p></li>
+</ul>
+<h2 id="reference-material">Reference Material</h2>
+<p>To help you get started we are providing a reference implementation of the game rules and the Lambda-Man processor.</p>
+<ul>
+<li><a href="reference.html">http://icfpcontest.org/reference.html</a></li>
+</ul>
+<p>This site also contains other refence material that you might find useful, such as sample maps.</p>
+<p>If you find any discrepancies between this specification document and the reference implementation (or other material), then please let the judges know as soon as possible!</p>
+<h1 id="the-lambda-man-game-rules">The Lambda-Man game rules</h1>
+<h2 id="objectives">Objectives</h2>
+<p>A <em>Lambda-Man</em> lives in a two-dimensional maze made up of <em>walls</em>, and must eat as many <em>pills</em> as he can, while avoiding the <em>ghosts</em> who chase him. Lambda-Man has three lives, and if a ghost catches Lambda-Man, then he loses a life. When there are no more Lambda-Man lives, the game is over. When all the pills are eaten, Lambda-Man has completed the level.</p>
+<p>In addition to pills, a Lambda-Man may also eat <em>power pills</em>. These gives every Lambda-Man the ability to eat ghosts for a short period of time.</p>
+<p>Bonus points are awarded for eating the <em>fruit</em>, which appears after a specific period of time at a specific location on the map before disappearing.</p>
+<p>By convention, the following symbols are used to represent the various elements of the game:</p>
+<table>
+<thead>
+<tr class="header">
+<th align="left">Symbol</th>
+<th align="left">Element</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left"><code>&lt;space&gt;</code></td>
+<td align="left">Empty</td>
+</tr>
+<tr class="even">
+<td align="left"><code>#</code></td>
+<td align="left">Wall</td>
+</tr>
+<tr class="odd">
+<td align="left"><code>.</code></td>
+<td align="left">Pill</td>
+</tr>
+<tr class="even">
+<td align="left"><code>o</code></td>
+<td align="left">Power Pill</td>
+</tr>
+<tr class="odd">
+<td align="left"><code>%</code></td>
+<td align="left">Fruit</td>
+</tr>
+<tr class="even">
+<td align="left"><code>\</code></td>
+<td align="left">Lambda-Man</td>
+</tr>
+<tr class="odd">
+<td align="left"><code>=</code></td>
+<td align="left">Ghost</td>
+</tr>
+</tbody>
+</table>
+<h2 id="mechanics">Mechanics</h2>
+<p>The world is entirely deterministic, and runs on a tick-by-tick basis.</p>
+<p>On each tick:</p>
+<ol style="list-style-type: decimal">
+<li><p>All Lambda-Man and ghost moves scheduled for this tick take place. (Note that Lambda-Man and the ghosts do not move every tick, only every few ticks; see the <a href="#ticks">ticks section</a> below.)</p></li>
+<li><p>Next, any actions (fright mode deactivating, fruit appearing/disappearing) take place.</p></li>
+<li><p>Next, we check if Lambda-Man is occupying the same square as pills, power pills, or fruit:</p>
+<ol style="list-style-type: decimal">
+<li><p>If Lambda-Man occupies a square with a pill, the pill is eaten by Lambda-Man and removed from the game.</p></li>
+<li><p>If Lambda-Man occupies a square with a power pill, the power pill is eaten by Lambda-Man, removed from the game, and fright mode is immediately activated, allowing Lambda-Man to eat ghosts.</p></li>
+<li><p>If Lambda-Man occupies a square with a fruit, the fruit is eaten by Lambda-Man, and removed from the game.</p></li>
+</ol></li>
+<li><p>Next, if one or more visible ghosts are on the same square as Lambda-Man, then depending on whether or not fright mode is active, Lambda-Man either loses a life or eats the ghost(s). See below for details.</p></li>
+<li><p>Next, if all the ordinary pills (ie not power pills) have been eaten, then Lambda-Man wins and the game is over.</p></li>
+<li><p>Next, if the number of Lambda-Man lives is 0, then Lambda-Man loses and the game is over.</p></li>
+<li><p>Finally, the tick counter is incremented.</p></li>
+</ol>
+<h2 id="losing-a-life">Losing a life</h2>
+<p>If at the end of a tick Lambda-Man is in the same square as a visible ghost and fright mode is not active then Lambda-Man loses a life. In this case, Lambda-Man and all the ghosts are immediately returned to their starting positions and starting directions (so that at the beginning of the next tick, Lambda-Man and the ghosts are in their starting positions).</p>
+<h2 id="power-pills">Power Pills</h2>
+<p>When a power pill is eaten, all ghosts turn around and move in the opposite direction to their previous move, and fright mode is enabled. While in fright mode, if a ghost occupies the same square as a Lambda-Man, the ghost is eaten. When a ghost is eaten, it is returned to its starting position and starting direction, and is invisible until fright mode expires. While invisible, the ghost can neither eat nor be eaten.</p>
+<p>If a power pill is eaten during fright mode, the fright mode tick count is reset.</p>
+<p>When fright mode expires, all ghosts become visible.</p>
+<h2 id="scoring">Scoring</h2>
+<p>The aim of the game is to achieve the highest score, which is the sum of all the scores achieved on all levels. Points are awarded as follows.</p>
+<p>Each pill eaten is worth 10 points.</p>
+<p>Each power pill eaten is worth 50 points.</p>
+<p>Each fruit eaten is worth points depending on its flavour. The flavour of a fruit is determined by the level as described below:</p>
+<table>
+<thead>
+<tr class="header">
+<th align="left">Level</th>
+<th align="left">Flavour</th>
+<th align="left">Points</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">1</td>
+<td align="left">Cherry</td>
+<td align="left">100</td>
+</tr>
+<tr class="even">
+<td align="left">2</td>
+<td align="left">Strawberry</td>
+<td align="left">300</td>
+</tr>
+<tr class="odd">
+<td align="left">3</td>
+<td align="left">Peach</td>
+<td align="left">500</td>
+</tr>
+<tr class="even">
+<td align="left">4</td>
+<td align="left">Peach</td>
+<td align="left">500</td>
+</tr>
+<tr class="odd">
+<td align="left">5</td>
+<td align="left">Apple</td>
+<td align="left">700</td>
+</tr>
+<tr class="even">
+<td align="left">6</td>
+<td align="left">Apple</td>
+<td align="left">700</td>
+</tr>
+<tr class="odd">
+<td align="left">7</td>
+<td align="left">Grapes</td>
+<td align="left">1000</td>
+</tr>
+<tr class="even">
+<td align="left">8</td>
+<td align="left">Grapes</td>
+<td align="left">1000</td>
+</tr>
+<tr class="odd">
+<td align="left">9</td>
+<td align="left">Galaxian</td>
+<td align="left">2000</td>
+</tr>
+<tr class="even">
+<td align="left">10</td>
+<td align="left">Galaxian</td>
+<td align="left">2000</td>
+</tr>
+<tr class="odd">
+<td align="left">11</td>
+<td align="left">Bell</td>
+<td align="left">3000</td>
+</tr>
+<tr class="even">
+<td align="left">12</td>
+<td align="left">Bell</td>
+<td align="left">3000</td>
+</tr>
+<tr class="odd">
+<td align="left">&gt; 12</td>
+<td align="left">Key</td>
+<td align="left">5000</td>
+</tr>
+</tbody>
+</table>
+<p>The level of a map is determined by its area. Given a map of size <code>mapWidth * mapHeight</code>, the level is the number which satisfies:</p>
+<pre><code>100 * (level - 1) &lt; mapWidth * mapHeight &lt;= 100 * level</code></pre>
+<p>For example, a map of size <code>15 * 18 = 270</code> is a level 3 map, since <code>200 &lt; 270 &lt;= 300</code>.</p>
+<p>While in fright mode, the first ghost eaten is worth 200 points. Each subsequent ghost eaten until another power-pill is eaten is worth double the previous one, up to a limit of 1600 points:</p>
+<table>
+<thead>
+<tr class="header">
+<th align="left">Number of ghosts eaten</th>
+<th align="left">Points</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">First</td>
+<td align="left">200</td>
+</tr>
+<tr class="even">
+<td align="left">Second</td>
+<td align="left">400</td>
+</tr>
+<tr class="odd">
+<td align="left">Third</td>
+<td align="left">800</td>
+</tr>
+<tr class="even">
+<td align="left">Fourth</td>
+<td align="left">1600</td>
+</tr>
+<tr class="odd">
+<td align="left">Fifth and subsequent</td>
+<td align="left">1600</td>
+</tr>
+</tbody>
+</table>
+<p>If Lambda-Man manages to eat all of the pills on a level, he is awarded with a bonus: his score is multiplied by the remaining lives plus one. For example, if the Lambda-Man is on his last life, the score is doubled.</p>
+<h2 id="ticks">Ticks</h2>
+<p>The world runs tick-by-tick. The Ultimate Tick Clock (UTC) gives the current tick time, and is counted from 1 at the beginning of each game. A game runs until the End Of Lives (EOL), which happens either when Lambda-Man runs out of lives, or if a particular UTC is reached, whereupon lives are set to 0:</p>
+<table>
+<thead>
+<tr class="header">
+<th align="left">Event</th>
+<th align="left">UTC</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">End Of Lives</td>
+<td align="left">127 * mapWidth * mapHeight * 16</td>
+</tr>
+</tbody>
+</table>
+<p>Two fruits appear on every level, at a fixed UTC. The second fruit will appear whether or not the first fruit was eaten.</p>
+<table>
+<thead>
+<tr class="header">
+<th align="left">Event</th>
+<th align="left">UTC</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Fruit 1 appears</td>
+<td align="left">127 * 200</td>
+</tr>
+<tr class="even">
+<td align="left">Fruit 2 appears</td>
+<td align="left">127 * 400</td>
+</tr>
+</tbody>
+</table>
+<p>Each fruit remains in the game until either it is eaten, or it expires at a fixed UTC.</p>
+<table>
+<thead>
+<tr class="header">
+<th align="left">Event</th>
+<th align="left">UTC</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Fruit 1 expires</td>
+<td align="left">127 * 280</td>
+</tr>
+<tr class="even">
+<td align="left">Fruit 2 expires</td>
+<td align="left">127 * 480</td>
+</tr>
+</tbody>
+</table>
+<p>Each power pill eaten triggers fright mode, which expires after a fixed duration counted from when the last power pill is eaten.</p>
+<table>
+<thead>
+<tr class="header">
+<th align="left">Event</th>
+<th align="left">Ticks duration</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Fright mode duration</td>
+<td align="left">127 * 20</td>
+</tr>
+</tbody>
+</table>
+<p>The Lambda-Man and ghosts move at different speeds. Lambda-Man moves slower when he is eating, and the ghosts move slower when they are in fright mode. All moves are at regular intervals, based on their <em>ticks per move</em> value which is described below. For example, the first Lambda-Man move occurs at tick 127, the second at tick 254, and so on.</p>
+<table>
+<thead>
+<tr class="header">
+<th align="left">Event</th>
+<th align="left">Ticks per move</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Lambda-Man</td>
+<td align="left">127</td>
+</tr>
+<tr class="even">
+<td align="left">Lambda-Man (eating)</td>
+<td align="left">137</td>
+</tr>
+<tr class="odd">
+<td align="left">Ghost AI 1</td>
+<td align="left">130</td>
+</tr>
+<tr class="even">
+<td align="left">Ghost AI 2</td>
+<td align="left">132</td>
+</tr>
+<tr class="odd">
+<td align="left">Ghost AI 3</td>
+<td align="left">134</td>
+</tr>
+<tr class="even">
+<td align="left">Ghost AI 4</td>
+<td align="left">136</td>
+</tr>
+<tr class="odd">
+<td align="left">Ghost AI 1 (fright)</td>
+<td align="left">195</td>
+</tr>
+<tr class="even">
+<td align="left">Ghost AI 2 (fright)</td>
+<td align="left">198</td>
+</tr>
+<tr class="odd">
+<td align="left">Ghost AI 3 (fright)</td>
+<td align="left">201</td>
+</tr>
+<tr class="even">
+<td align="left">Ghost AI 4 (fright)</td>
+<td align="left">204</td>
+</tr>
+</tbody>
+</table>
+<h2 id="movement">Movement</h2>
+<p>The Lambda-Man can move into any adjacent square that is not occupied by a wall. An adjacent square is one that is up, down, left, or right of another.</p>
+<p>When Lambda-Man tries to choose an illegal move, he stops moving.</p>
+<p>Ghosts can only move into an adjacent square that is not occupied by a wall. At a tick when a ghost may move, it must move (unless it is surrounded on all four sides by walls). Furthermore, a ghost cannot move in the opposite direction to its current direction, unless that is the only direction available (because it is surrounded on three sides by walls).</p>
+<p>Consequently, a ghost can only choose its direction at a junction and cannot choose to turn back on itself. A junction is a square which has at least three adjacent squares with no walls. For example, the following are all junctions.</p>
+<pre><code> # #     # #             # #     # # 
+## ##    # ##   #####   ## #    ## ##
+  =      #=       =       =#      =  
+#####    # ##   ## ##   ## #    ## ##
+         # #     # #     # #     # # </code></pre>
+<p>When a ghost encounters a bend, it is forced to continue around the bend. When a ghost encounters a dead end, it is forced to turn around.</p>
+<p>When a ghost chooses an illegal move (or no move at all) at a junction, it is forced to continue in its previous direction if this is legal, and if not, then the first legal direction out of up, right, down, and left, in that order.</p>
+<p>At the start of the game, all ghosts and Lambdaman face down.</p>
+<h2 id="tournament-scoring">Tournament scoring</h2>
+<p>For the lightning round it is your Lambda-Man versus ghosts supplied by the judges and in mazes supplied by the judges.</p>
+<p>Your overall score in the lightning round is the sum of your individual scores on a series of games, played in different maps. The actual maps and ghosts used will not be revealed but they will range from easy to hard. The map properties are <a href="#map-properties">described below</a>.</p>
+<h2 id="map-properties">Map properties</h2>
+<p>Maps are rectangular. Map x and y coordinates are indexed from 0. The top left corner is (0,0), so increasing x-coordinates are to the right, and increasing y-coordinates are down.</p>
+<p>Maps are like mazes: they consist of corridors 1-square wide, without open spaces. More formally: there are no 2x2 areas consisting only of non-wall squares.</p>
+<p>Maps have walls around the edges.</p>
+<p>Every pill in a map is accessible.</p>
+<p>The maps vary in size and in the number of ghosts and power pills. Easy maps will be smaller, with fewer ghosts and a higher density of power pills. Harder maps will be larger, with more ghosts and a lower density of power pills. The maximum map size is 256 by 256.</p>
+<h2 id="ghosts-and-ghost-programs">Ghosts and ghost programs</h2>
+<p>Ghost AI programs are assigned to ghosts in each map. If there are more ghosts in a map than then are ghost AI programs in use then the AI programs are assigned to the ghosts cyclically.</p>
+<p>For example, if a map has 4 ghosts and there are 2 AI programs then they are assigned as follows:</p>
+<table>
+<thead>
+<tr class="header">
+<th align="left">Ghost</th>
+<th align="left">AI Program</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">ghost 1</td>
+<td align="left">program 1</td>
+</tr>
+<tr class="even">
+<td align="left">ghost 2</td>
+<td align="left">program 2</td>
+</tr>
+<tr class="odd">
+<td align="left">ghost 3</td>
+<td align="left">program 1</td>
+</tr>
+<tr class="even">
+<td align="left">ghost 4</td>
+<td align="left">program 2</td>
+</tr>
+</tbody>
+</table>
+<p>The order of ghosts is in increasing order of their starting coordinates, where <code>(x1, y1)</code> is considered smaller than <code>(x2, y2)</code> if <code>y1 &lt; y2'</code> or if <code>y1 = y2'</code> and <code>x1 &lt; x2'</code>.</p>
+<p>The system allows at most 4 ghost programs (but more than 4 ghosts).</p>
+<h1 id="ghost-cpu-ghc">GHost CPU (GHC)</h1>
+<p>The GHost CPU (GHC) is a conventional 8-bit microcontroller. Each ghost is run by a separate GHC. Although we found a complete copy of the CPU manual, it is quite terse in parts, as it assumes the conventions of the day. For those of you who (because of age or youth) do not remember the 1980s, we have tried to explain some of these conventions.</p>
+<h2 id="ghc-state">GHC State</h2>
+<p>Each register holds an 8-bit unsigned integer (between 0 and 255 inclusive). There are 2 separate memories: a data memory and a code memory, each with 256 locations (numbered from 0 to 255 inclusive). Hence the contents of a register can be interpreted directly as a data memory address, the contents of a data memory location, or a code memory address. The GHC performs all arithmetic modulo 256, so 255 + 1 = 0.</p>
+<h2 id="initialisation-and-program-execution">Initialisation and Program Execution</h2>
+<p>At the start of a game, the GHC’s code memory is initialised with a program, as described in the section <a href="#code-format">Code Format</a>. The contents of the code memory does not change during a game. All data memory locations and all registers are initialised to 0.</p>
+<p>During each game cycle, the GHC runs the program, executing up to 1024 instructions: the game cycle is divided into 1024 execution cycles. At the start of each game cycle, the PC is initialised to 0. An execution cycle begins with the GHC reading the instruction at the address referenced by the PC from code memory. It executes the instruction, as described in the section <a href="#instructionReference">Instruction Reference</a>, possibly changing the contents of the data memory and registers. At the end of the execution cycle, if the value of the PC is the same as it was at the start of the execution cycle, the GHC increments it. Execution terminates at the end of an execution cycle if: the instruction executed was HLT; it was the 1024th execution cycle of the game cycle; or execution of the instruction caused an error. The contents of the data memory and registers persist between game cycles.</p>
+<h2 id="code-format">Code Format</h2>
+<p>By convention, a GHC program is stored in a file with the extension .ghc (GHost Code).</p>
+<p>A program consists of several lines, terminated by newline characters. The contents of a line are whitespace insensitive: multiple consecutive whitespace characters are treated identically to one. A line is either empty (containing only whitespace) or contains an instruction.</p>
+<p>A program may contain comments, which are introduced using a semicolon (<code>;</code>). Anything from a semicolon until the end of a line (including the semicolon) is ignored. Hence a line containing only a comment is regarded as empty.</p>
+<p>An instruction consists of a mnemonic and zero or more arguments. The mnemonic is a case-insensitive sequence of alphabet characters.</p>
+<p>An argument is either:</p>
+<ol style="list-style-type: decimal">
+<li>a register argument (indicated by its name (<code>A</code> to <code>H</code> or <code>PC</code>));</li>
+<li>an indirect general-purpose register argument (indicated by its name enclosed in square brackets (<code>[A]</code> to <code>[H]</code> but not <code>[PC]</code>));</li>
+<li>a constant argument (indicated by its encoding in decimal (<code>0</code> to <code>255</code>));</li>
+<li>or the contents of a data memory location (indicated by its address in decimal, enclosed in square brackets (<code>[0]</code> to <code>[255]</code>)).</li>
+</ol>
+<p>The number of arguments required depends on the instruction (see <a href="#instruction-reference">Instruction Reference</a>).</p>
+<p>There must be a whitespace character between a mnemonic and the first argument (if any). There must be a comma (<code>,</code>) between consecutive arguments.</p>
+<p>Instructions may optionally be preceded or followed by whitespace. Arguments and argument-separating commas may optionally be preceded or followed by whitespace.</p>
+<p>When the GHC is initialised, each line containing an instruction is stored in the corresponding code memory location. For example, the instruction on the first non-empty line is stored at address 0 and the instruction on the second non-empty line is stored at address 1. As there are only 256 code memory locations available, a program may contain at most 256 instructions.</p>
+<h2 id="instruction-reference">Instruction Reference</h2>
+<p>The GHC is able to execute the following instructions:</p>
+<ul>
+<li><p><code>MOV dest,src</code></p>
+<p>Copy the value of the <code>src</code> argument into the <code>dest</code> argument. <code>dest</code> may not be a constant.</p></li>
+<li><p><code>INC dest</code></p>
+<p>Add 1 to the value of <code>dest</code> and store the result in <code>dest</code>. <code>dest</code> may not be a constant or the register <code>PC</code>.</p></li>
+<li><p><code>DEC dest</code></p>
+<p>Subtract 1 from the value of <code>dest</code> and store the result in <code>dest</code>. <code>dest</code> may not be a constant or the register <code>PC</code>.</p></li>
+<li><p><code>ADD dest,src</code></p>
+<p>Add the value of <code>src</code> to the value of <code>dest</code> and store the result in <code>dest</code>. <code>dest</code> may not be a constant or the register <code>PC</code>.</p></li>
+<li><p><code>SUB dest,src</code></p>
+<p>Subtract the value of <code>src</code> from the value of <code>dest</code> and store the result in <code>dest</code>. <code>dest</code> may not be a constant or the register <code>PC</code>.</p></li>
+<li><p><code>MUL dest,src</code></p>
+<p>Multiply the value of <code>src</code> by the value of <code>dest</code> and store the result in <code>dest</code>. <code>dest</code> may not be a constant or the register <code>PC</code>.</p></li>
+<li><p><code>DIV dest,src</code></p>
+<p>Compute the integer quotient of <code>dest</code> by the value of <code>src</code>, and store the result in <code>dest</code>. <code>dest</code> may not be a constant or the register <code>PC</code>. Results in an error if the value of <code>src</code> is 0.</p></li>
+<li><p><code>AND dest,src</code></p>
+<p>Bitwise AND the value of <code>dest</code> and the value of <code>src</code>, storing the result in <code>dest</code>. <code>dest</code> may not be a constant or the register <code>PC</code>.</p></li>
+<li><p><code>OR dest,src</code></p>
+<p>Bitwise OR the value of <code>dest</code> and the value of <code>src</code>, storing the result in <code>dest</code>. <code>dest</code> may not be a constant or the register <code>PC</code>.</p></li>
+<li><p><code>XOR dest,src</code></p>
+<p>Bitwise XOR the value of <code>dest</code> and the value of <code>src</code>, storing the result in <code>dest</code>. <code>dest</code> may not be a constant or the register <code>PC</code>.</p></li>
+<li><p><code>JLT targ,x,y</code></p>
+<p>Compare the value of <code>x</code> with the value of <code>y</code>. If the value of <code>x</code> is less than the value of <code>y</code>, set the <code>PC</code> to the constant value <code>targ</code>.</p></li>
+<li><p><code>JEQ targ,x,y</code></p>
+<p>Compare the value of <code>x</code> with the value of <code>y</code>. If the value of <code>x</code> is equal to the value of <code>y</code>, set the <code>PC</code> to the constant value <code>targ</code>.</p></li>
+<li><p><code>JGT targ,x,y</code></p>
+<p>Compare the value of <code>x</code> with the value of <code>y</code>. If the value of <code>x</code> is greater than the value of <code>y</code>, set the <code>PC</code> to the constant value <code>targ</code>.</p></li>
+<li><p><code>INT i</code></p>
+<p>Invoke the interrupt service <code>i</code> (see <a href="#interrupt-reference">Interrupt Reference</a>).</p></li>
+<li><p><code>HLT</code></p>
+<p>Halt execution of the GHC.</p></li>
+</ul>
+<h2 id="interrupt-reference">Interrupt Reference</h2>
+<p>The effect of invoking an interrupt service is architecture-dependent. In the LamCo architecture, the following interrupts are standard:</p>
+<ul>
+<li><p><code>INT 0</code></p>
+<ul>
+<li>In:
+<ul>
+<li>Register <code>A</code>: ghost’s new direction</li>
+</ul></li>
+</ul>
+<p>Set the direction of the ghost. 0 is up; 1 is right; 2 is down; 3 is left.</p>
+<p>The direction of the ghost is set at the end of the game cycle. If the interrupt is called multiple times in a single game cycle, the last interrupt overrides any earlier ones. Using an invalid direction in register <code>A</code> is equivalent to retaining the ghost’s original direction at the beginning of the game cycle.</p></li>
+<li><p><code>INT 1</code></p>
+<ul>
+<li>Out:
+<ul>
+<li>Register <code>A</code>: First Lambda-Man’s x-ordinate</li>
+<li>Register <code>B</code>: First Lambda-Man’s y-ordinate</li>
+</ul></li>
+</ul>
+<p>Stores the first Lambda-Man’s position in registers <code>A</code> (x-ordinate) and <code>B</code> (y-ordinate). In the single Lambda-Man version of the game, the first Lambda-Man is the only Lambda-Man.</p></li>
+<li><p><code>INT 2</code></p>
+<ul>
+<li>Out:
+<ul>
+<li>Register <code>A</code>: Second Lambda-Man’s x-ordinate</li>
+<li>Register <code>B</code>: Second Lambda-Man’s y-ordinate</li>
+</ul></li>
+</ul>
+<p>Stores the second Lambda-Man’s position in registers <code>A</code> (x-ordinate) and <code>B</code> (y-ordinate). In the single Lambda-Man version of the game, the behaviour of this interrupt is unknown.</p></li>
+<li><p><code>INT 3</code></p>
+<ul>
+<li>Out:
+<ul>
+<li>Register <code>A</code>: this ghost’s index</li>
+</ul></li>
+</ul>
+<p>Stores the ghost’s index in register <code>A</code>.</p></li>
+<li><p><code>INT 4</code></p>
+<ul>
+<li>In:
+<ul>
+<li>Register <code>A</code>: ghost index</li>
+</ul></li>
+<li>Out:
+<ul>
+<li>Register <code>A</code>: indexed ghost’s starting x-ordinate</li>
+<li>Register <code>B</code>: indexed ghost’s starting y-ordinate</li>
+</ul></li>
+</ul>
+<p>For the ghost with index read from register <code>A</code>, stores its starting position in registers <code>A</code> (x-ordinate) and <code>B</code> (y-ordinate).</p></li>
+<li><p><code>INT 5</code></p>
+<ul>
+<li>In:
+<ul>
+<li>Register <code>A</code>: ghost index</li>
+</ul></li>
+<li>Out:
+<ul>
+<li>Register <code>A</code>: indexed ghost’s current x-ordinate</li>
+<li>Register <code>B</code>: indexed ghost’s current y-ordinate</li>
+</ul></li>
+</ul>
+<p>For the ghost with index read from register <code>A</code>, stores its current position in registers <code>A</code> (x-ordinate) and <code>B</code> (y-ordinate).</p></li>
+<li><p><code>INT 6</code></p>
+<ul>
+<li>In:
+<ul>
+<li>Register <code>A</code>: ghost index</li>
+</ul></li>
+<li>Out:
+<ul>
+<li>Register <code>A</code>: indexed ghost’s current vitality</li>
+<li>Register <code>B</code>: indexed ghost’s current direction</li>
+</ul></li>
+</ul>
+<p>For the ghost with index read from register <code>A</code>, stores its vitality in register <code>A</code>, and its direction in register <code>B</code>.</p>
+Vitality:
+<ul>
+<li>0: standard;</li>
+<li>1: fright mode;</li>
+<li>2: invisible.</li>
+</ul></li>
+<li><p><code>INT 7</code></p>
+<ul>
+<li>In:
+<ul>
+<li>Register <code>A</code>: map square x-ordinate</li>
+<li>Register <code>B</code>: map square y-ordinate</li>
+</ul></li>
+<li>Out:
+<ul>
+<li>Register <code>A</code>: contents of map square</li>
+</ul></li>
+</ul>
+<p>Stores the contents of map square with index read from registers <code>A</code> (x-ordinate) and <code>B</code> (y-ordinate) in register <code>A</code>. If the co-ordinates lie outside the defined bounds of the map, stores 0.</p>
+Contents:
+<ul>
+<li>0: Wall (<code>#</code>)</li>
+<li>1: Empty (<code>&lt;space&gt;</code>)</li>
+<li>2: Pill</li>
+<li>3: Power pill</li>
+<li>4: Fruit</li>
+<li>5: Lambda-Man starting position</li>
+<li>6: Ghost starting position</li>
+</ul></li>
+<li><p><code>INT 8</code></p>
+<ul>
+<li>In:
+<ul>
+<li>Register <code>PC</code></li>
+<li>Register <code>A</code>..<code>H</code></li>
+</ul></li>
+</ul>
+<p>Sends the current value of the <code>PC</code> and all registers to an external debug/trace agent.</p></li>
+</ul>
+<h2 id="examples">Examples</h2>
+<p>The following GHC programs illustrate the behaviour of some of the instructions:</p>
+<h3 id="miner.ghc">miner.ghc</h3>
+<pre><code>; Always try to go down.
+mov a,2
+int 0
+hlt</code></pre>
+<h3 id="flipper.ghc">flipper.ghc</h3>
+<pre><code>; Go up if our x-ordinate is even, or down if it is odd.
+int 3          ; Get our ghost index in A.
+int 5          ; Get our x-ordinate in A.
+and a,1        ; Zero all but least significant bit of A.
+               ; Now A is 0 if x-ordinate is even, or 1 if it is odd.
+mov b,a        ; Save A in B because we need to use A to set direction.
+mov a,2        ; Move down by default.
+jeq 7,b,1      ; Don&#39;t change anything if x-ordinate is odd.
+mov a,0        ; We only get here if x-ordinate was even, so move up.
+int 0          ; This is line 7, the target of the above jump. Now actually set the direction.
+hlt            ; Stop.</code></pre>
+<h3 id="fickle.ghc">fickle.ghc</h3>
+<pre><code>; Keep track of how long we have spent travelling in each direction.
+; Try to go in the direction we&#39;ve travelled in least.
+
+               ; Count of time spent going in direction 0 is in memory address 0, and so on.
+mov a,255      ; A is the min value.
+mov b,0        ; B is the corresponding direction.
+mov c,255      ; C is the candidate direction for the new min.
+               ; Start of loop.
+inc c          ; Pick new direction.
+jgt 7,[c],a    ; Jump if count of direction C is above best so far.
+               ; We have a new min.
+mov a,[c]      ; Save new min.
+mov b,c        ; Save direction.
+jlt 3,c,3      ; Jump target. Loop back if we have not tried all 4 directions.
+
+mov a,b        ; Actually set desired direction.
+int 0
+
+int 3          ; Get our ghost index in A.
+int 6          ; Get out current direction in B.
+inc [b]        ; Increment corresponding count.
+hlt            ; Stop.</code></pre>
+<h2 id="errors">Errors</h2>
+<p>As mentioned above, if an instruction causes an error then execution halts. If prior to this the new direction of the Ghost was set (with <code>INT 0</code>) then this will be the requested move of the ghost and the game will continue. If the direction is not set then the ghost’s requested move will be the same as its previous move.</p>
+<h1 id="lambda-man-cpu">Lambda-Man CPU</h1>
+<p>We have been able to recover some documentation about the programming environment used by the Lambda-Man AI team, including their processor ISA and some bits of assembly code. We also know that the Lambda-Man AI team, being LISP fanatics, used some form of LISP but unfortunately we have not been able to find any of their LISP code, nor their compiler.</p>
+<p>The LamCo “General Compute Coprocessor” (GCC) is a rather unconventional and—for its time—sophisticated coprocessor. It appears to have been designed as a target for a LISP compiler. Rather than a set of orthogonal instructions, it has a fair number of somewhat specialised instructions that (we presume) must have been useful for a compiler. We did however find a handwritten note by one of the engineers indicating that someone had written a compiler from a variant of Pascal, albeit with some limitations.</p>
+<p>Fortunately we do have the original documentation of the processor which describes the instructions and operation in detail, though sadly not very much on how it was intended to be used by a compiler.</p>
+<p>The sections below include excerpts from the original documentation along with our own comments.</p>
+<h2 id="general-architecture">General architecture</h2>
+<p>The machine is stack based, with three different stacks used for different purposes. It has—for its time—a relatively large memory. The way the memory is accessed and organised is quite unusual: apart from the stacks that live in memory, the rest of the memory is used for a garbage collected heap, with the GC implemented by the hardware. Because of this there are no general purpose memory access instructions: all memory access is in one of these stacks or in the GC’d heap.</p>
+<h2 id="cpu-registers">CPU Registers</h2>
+<p>There are 4 programmer visible machine registers, all of which are for special purposes:</p>
+<ul>
+<li><code>%c</code>: control register (program counter / instruction pointer)</li>
+<li><code>%s</code>: data stack register</li>
+<li><code>%d</code>: control stack register</li>
+<li><code>%e</code>: environment frame register</li>
+</ul>
+<h2 id="memory-stacks">Memory stacks</h2>
+<p>Three of the registers point into special data structures in memory:</p>
+<ul>
+<li>Data stack</li>
+<li>Control stack</li>
+<li>Environment frame chain</li>
+</ul>
+<p>The remainder of the memory is dedicated to the data heap.</p>
+<h2 id="control-register-and-program-code-layout">Control register and program code layout</h2>
+<p>The machine has logically separate address spaces for code versus data. The <code>%c</code> register is an instruction pointer, pointing to the next instruction to be executed. Programs are laid out from low addresses to high. The effect of most instructions on the instruction pointer is simply to increment its value by one.</p>
+<h2 id="data-stack-and-register">Data stack and register</h2>
+<p>The data stack is used to save intermediate data values during calculations, and to return results from function calls.</p>
+<p>It is a logically contiguous stack. The <code>%s</code> register points to the top of the stack.</p>
+<p>Many of the instructions simply pop and push values on the data stack. For example the ADD instruction pops two integer values off the stack and pushes back their sum.</p>
+<h2 id="control-stack-and-register">Control stack and register</h2>
+<p>The control stack is used to save return information in function calls. It saves return address and environment frame pointers.</p>
+<p>It is a logically contiguous stack.</p>
+<p>Only the complex control flow instructions affect the control stack and register. See <code>SEL</code>/<code>JOIN</code> and <code>AP</code>/<code>RAP</code>/<code>RTN</code> for details.</p>
+<h2 id="environment-frames-and-register">Environment frames and register</h2>
+<p>The environment is used for storing local variables, including function parameters. There is an instruction for loading values from the environment onto the top of the data stack. The environment consists of a chain of frames, which is used to implement nested variable scopes within higher level languages, such as local blocks with extra local variables and functions.</p>
+<p>The environment is more complex than the two stack structures. Rather than a contiguous stack, it consists of a chain of environment frames. Each frame contains a pointer to its parent frame. In fact the chain of frames is <strong>not</strong> strictly a stack: the lifetime of the frames is not always a simple LIFO stack order. Because of this the frames are managed by the hardware GC.</p>
+<p>Each frame consists of a pointer to its parent frame and zero or more data values. The <code>%e</code> register points to the local frame. The machine has direct support for loading a value from the local frame or any of its parent frames, which in general requires following the chain of environment frames.</p>
+<p>(We believe in the real hardware this feature was implemented in microcode, with internal registers to cache the outermost frame and a fixed number of the inner most frames for quick access).</p>
+<h2 id="data-heap-and-data-values">Data heap and data values</h2>
+<p>The machine makes extensive use of dynamic allocations and has built-in support for a garbage collected data heap. Values in the data stack and in environment frames can be pointers into the heap.</p>
+<p>There are three types of data value: integers, pairs and closures. Integers are represented in the usual way as binary signed integers. Pairs and closures are represented by pointers to objects in the data heap. The three types of values are distinguished by tag bits. The tag bits are not software visible (except for the <code>ATOM</code> instruction) but are used by the hardware for error checking.</p>
+<p>There are three instructions for manipulating pairs: allocating a pair, accessing the first and accessing the second component of a pair.</p>
+<p>All program data structures have to be represented using combinations of pairs and integers (and sometimes closures).</p>
+<h1 id="instruction-reference-1">Instruction reference</h1>
+<pre><code>LDC - load constant
+
+Synopsis: load an immediate literal;
+          push it onto the data stack
+Syntax:  LDC $n
+Example: LDC 3
+Effect:
+  %s := PUSH(SET_TAG(TAG_INT,$n),%s)
+  %c := %c+1
+
+
+LD - load from environment
+
+Synopsis: load a value from the environment;
+          push it onto the data stack
+Syntax:  LD $n $i
+Example: LD 0 1
+Effect:
+  $fp := %e
+  while $n &gt; 0 do            ; follow chain of frames to get n&#39;th frame
+  begin
+    $fp := FRAME_PARENT($fp)
+    $n := $n-1
+  end
+  $v := FRAME_VALUE($fp, $i) ; i&#39;th element of frame
+  %s := PUSH($v,%s)          ; push onto the data stack
+  %c := %c+1
+Notes:
+  Values within a frame are indexed from 0.
+
+
+ADD - integer addition
+
+Synopsis: pop two integers off the data stack;
+          push their sum
+Syntax: ADD
+Effect:
+  $y,%s := POP(%s)
+  $x,%s := POP(%s)
+  if TAG($x) != TAG_INT then FAULT(TAG_MISMATCH)
+  if TAG($y) != TAG_INT then FAULT(TAG_MISMATCH)
+  $z := $x + $y
+  %s := PUSH(SET_TAG(TAG_INT,$z),%s)
+  %c := %c+1
+
+
+SUB - integer subtraction
+
+Synopsis: pop two integers off the data stack;
+          push the result of subtracting one from the other
+Syntax: SUB
+Effect:
+  $y,%s := POP(%s)
+  $x,%s := POP(%s)
+  if TAG($x) != TAG_INT then FAULT(TAG_MISMATCH)
+  if TAG($y) != TAG_INT then FAULT(TAG_MISMATCH)
+  $z := $x - $y
+  %s := PUSH(SET_TAG(TAG_INT,$z),%s)
+  %c := %c+1
+
+
+MUL - integer multiplication
+
+Synopsis: pop two integers off the data stack;
+          push their product
+Syntax: MUL
+Effect:
+  $y,%s := POP(%s)
+  $x,%s := POP(%s)
+  if TAG($x) != TAG_INT then FAULT(TAG_MISMATCH)
+  if TAG($y) != TAG_INT then FAULT(TAG_MISMATCH)
+  $z := $x * $y
+  %s := PUSH(SET_TAG(TAG_INT,$z),%s)
+  %c := %c+1
+
+
+DIV - integer division
+
+Synopsis: pop two integers off the data stack;
+          push the result of the integer division of one of the other
+Syntax: DIV
+Effect:
+  $y,%s := POP(%s)
+  $x,%s := POP(%s)
+  if TAG($x) != TAG_INT then FAULT(TAG_MISMATCH)
+  if TAG($y) != TAG_INT then FAULT(TAG_MISMATCH)
+  $z := $x / $y
+  %s := PUSH(SET_TAG(TAG_INT,$z),%s)
+  %c := %c+1
+
+
+CEQ - compare equal
+
+Synopsis: pop two integers off the data stack;
+          test if they are equal;
+          push the result of the test
+Syntax: CEQ
+Effect:
+  $y,%s := POP(%s)
+  $x,%s := POP(%s)
+  if TAG($x) != TAG_INT then FAULT(TAG_MISMATCH)
+  if TAG($y) != TAG_INT then FAULT(TAG_MISMATCH)
+  if $x == $y then
+    $z := 1
+  else
+    $z := 0
+  %s := PUSH(SET_TAG(TAG_INT,$z),%s)
+  %c := %c+1
+
+
+CGT - compare greater than
+
+Synopsis: pop two integers off the data stack;
+          test if the first is strictly greater than the second;
+          push the result of the test
+Syntax: CGT
+Effect:
+  $y,%s := POP(%s)
+  $x,%s := POP(%s)
+  if TAG($x) != TAG_INT then FAULT(TAG_MISMATCH)
+  if TAG($y) != TAG_INT then FAULT(TAG_MISMATCH)
+  if $x &gt; $y then
+    $z := 1
+  else
+    $z := 0
+  %s := PUSH(SET_TAG(TAG_INT,$z),%s)
+  %c := %c+1
+
+
+CGTE - compare greater than or equal
+
+Synopsis: pop two integers off the data stack;
+          test if the first is greater than or equal to the second;
+          push the result of the test
+Syntax: CGTE
+Effect:
+  $y,%s := POP(%s)
+  $x,%s := POP(%s)
+  if TAG($x) != TAG_INT then FAULT(TAG_MISMATCH)
+  if TAG($y) != TAG_INT then FAULT(TAG_MISMATCH)
+  if $x &gt;= $y then
+    $z := 1
+  else
+    $z := 0
+  %s := PUSH(SET_TAG(TAG_INT,$z),%s)
+  %c := %c+1
+
+
+ATOM - test if value is an integer
+
+Synopsis: pop a value off the data stack;
+          test the value tag to see if it is an int;
+          push the result of the test
+Syntax: ATOM
+Effect:
+  $x,%s := POP(%s)
+  if TAG($x) == TAG_INT then
+    $y := 1
+  else
+    $y := 0
+  %s := PUSH(SET_TAG(TAG_INT,$y),%s)
+  %c := %c+1
+
+
+CONS - allocate a CONS cell
+
+Synopsis: pop two values off the data stack;
+          allocate a fresh CONS cell;
+          fill it with the two values;
+          push the pointer to the CONS cell
+Syntax: CONS
+Effect:
+  $y,%s := POP(%s)
+  $x,%s := POP(%s)
+  $z := ALLOC_CONS($x,$y)
+  %s := PUSH(SET_TAG(TAG_CONS,$z),%s)
+  %c := %c+1
+
+
+CAR - extract first element from CONS cell
+
+Synopsis: pop a pointer to a CONS cell off the data stack;
+          extract the first element of the CONS;
+          push it onto the data stack
+Syntax: CAR
+Effect:
+  $x,%s := POP(%s)
+  if TAG($x) != TAG_CONS then FAULT(TAG_MISMATCH)
+  $y := CAR($x)
+  %s := PUSH($y,%s)
+  %c := %c+1
+
+
+CDR - extract second element from CONS cell
+
+Synopsis: pop a pointer to a CONS cell off the data stack;
+          extract the second element of the CONS;
+          push it onto the data stack
+Syntax: CDR
+Effect:
+  $x,%s := POP(%s)
+  if TAG($x) != TAG_CONS then FAULT(TAG_MISMATCH)
+  $y := CDR($x)
+  %s := PUSH($y,%s)
+  %c := %c+1
+
+
+SEL - conditional branch
+
+Synopsis: pop an integer off the data stack;
+          test if it is non-zero;
+          push the return address to the control stack;
+          jump to the true address or to the false address
+Syntax:  SEL $t $f
+Example: SEL 335 346  ; absolute instruction addresses
+Effect:
+  $x,%s := POP(%s)
+  if TAG($x) != TAG_INT then FAULT(TAG_MISMATCH)
+  %d := PUSH(SET_TAG(TAG_JOIN,%c+1),%d)   ; save the return address
+  if $x == 0 then
+    %c := $f
+  else
+    %c := $t
+
+
+JOIN - return from branch
+
+Synopsis: pop a return address off the control stack, branch to that address
+Syntax:  JOIN
+Effect:
+  $x,%d := POP(%d)
+  if TAG($x) != TAG_JOIN then FAULT(CONTROL_MISMATCH)
+  %c := $x
+
+
+LDF - load function
+
+Synopsis: allocate a fresh CLOSURE cell;
+          fill it with the literal code address and the current
+            environment frame pointer;
+          push the pointer to the CLOSURE cell onto the data stack
+Syntax:  LDF $f
+Example: LDF 634      ; absolute instruction addresses
+Effect:
+  $x := ALLOC_CLOSURE($f,%e)
+  %s := PUSH(SET_TAG(TAG_CLOSURE,$x),%s)
+  %c := %c+1
+
+
+AP - call function
+
+Synopsis: pop a pointer to a CLOSURE cell off the data stack;
+          allocate an environment frame of size $n;
+          set the frame&#39;s parent to be the environment frame pointer
+            from the CLOSURE cell;
+          fill the frame&#39;s body with $n values from the data stack;
+          save the stack pointer, environment pointer and return address
+            to the control stack;
+          set the current environment frame pointer to the new frame;
+          jump to the code address from the CLOSURE cell;
+Syntax:  AP $n
+Example: AP 3      ; number of arguments to copy
+Effect:
+  $x,%s := POP(%s)            ; get and examine function closure
+  if TAG($x) != TAG_CLOSURE then FAULT(TAG_MISMATCH)
+  $f := CAR_CLOSURE($x)
+  $e := CDR_CLOSURE($x)
+  $fp := ALLOC_FRAME($n)      ; create a new frame for the call
+  FRAME_PARENT($fp) := $e
+  $i := $n-1
+  while $i != -1 do           ; copy n values from the stack into the frame in reverse order
+  begin
+    $y,%s := POP(%s)
+    FRAME_VALUE($fp,$i) := $y
+    $i := $i-1
+  end
+  %d := PUSH(%e,%d)                     ; save frame pointer
+  %d := PUSH(SET_TAG(TAG_RET,%c+1),%d)  ; save return address
+  %e := $fp                             ; establish new environment
+  %c := $f                              ; jump to function
+
+
+RTN - return from function call
+
+Synopsis: pop a stack pointer, return address and environment frame
+            pointer off of the control stack;
+          restore the stack and environment;
+          jump to the return address
+Syntax:  RTN
+Effect:
+  $x,%d := POP(%d)            ; pop return address
+  if TAG($x) == TAG_STOP then MACHINE_STOP
+  if TAG($x) != TAG_RET then FAULT(CONTROL_MISMATCH)
+  $y,%d := POP(%d)            ; pop frame pointer
+  %e := $y                    ; restore environment
+  %c := $x                    ; jump to return address
+Notes:
+  Standard ABI convention is to leave the function return value on the
+  top of the data stack. Multiple return values on the stack is possible,
+  but not used in the standard ABI.
+
+  The latest hardware revision optimizes the deallocation of the 
+  environment frame. If the environment has not been captured by LDF
+  (directly or indirectly) then it can be immediately deallocated.
+  Otherwise it is left for GC.
+
+
+DUM - create empty environment frame
+
+Synopsis: Prepare an empty frame;
+          push it onto the environment chain;
+Syntax:  DUM $n
+Example: DUM 3      ; size of frame to allocate
+Effect:
+  $fp := ALLOC_FRAME($n)       ; create a new empty frame of size $n
+  FRAME_PARENT($fp) := %e      ; set its parent frame
+  %e := SET_TAG(TAG_DUM,$fp)   ; set it as the new environment frame
+  %c := %c+1
+Notes:
+  To be used with RAP to fill in the frame body.
+
+
+RAP - recursive environment call function
+
+Synopsis: pop a pointer to a CLOSURE cell off the data stack;
+          the current environment frame pointer must point to an empty
+            frame of size $n;
+          fill the empty frame&#39;s body with $n values from the data stack;
+          save the stack pointer, parent pointer of the current environment
+             frame and return address to the control stack;
+          set the current environment frame pointer to the environment
+            frame pointer from the CLOSURE cell;
+          jump to the code address from the CLOSURE cell;
+Syntax:  RAP $n
+Example: RAP 3      ; number of arguments to copy
+Effect:
+  $x,%s := POP(%s)            ; get and examine function closure
+  if TAG($x) != TAG_CLOSURE then FAULT(TAG_MISMATCH)
+  $f := CAR_CLOSURE($x)
+  $fp := CDR_CLOSURE($x)
+  if TAG($fp) != TAG_DUM then FAULT(FRAME_MISMATCH)
+  if FRAME_SIZE($fp) != $n then FAULT(FRAME_MISMATCH)
+  $i := $n-1
+  while $i != -1 do           ; copy n values from the stack into the empty frame in reverse order
+  begin
+    $y,%s := POP(%s)
+    FRAME_VALUE($fp,$i) := $y
+    $i := $i-1
+  end
+  $fpp := FRAME_PARENT($fp)
+  %d := PUSH($fpp,%d)                   ; save frame pointer
+  %d := PUSH(SET_TAG(TAG_RET,%c+1),%d)  ; save return address
+  %e := $fp                             ; establish new environment
+  %c := $f                              ; jump to function
+
+
+STOP - terminate co-processor execution
+
+Synopsis: terminate co-processor execution and signal the main proessor.
+Syntax:  STOP
+Effect:
+  MACHINE_STOP
+Notes:
+  This instruction is no longer part of the standard ABI. The standard ABI
+  calling convention is to use a TAG_STOP control stack entry. See RTN.</code></pre>
+<h2 id="tail-call-extensions">Tail call extensions</h2>
+<pre><code>TSEL - tail-call conditional branch
+
+Synopsis: pop an integer off the data stack;
+          test if it is non-zero;
+          jump to the true address or to the false address
+Syntax:  TSEL $t $f
+Example: TSEL 335 346  ; absolute instruction addresses
+Effect:
+  $x,%s := POP(%s)
+  if TAG($x) != TAG_INT then FAULT(TAG_MISMATCH)
+  if $x == 0 then
+    %c := $f
+  else
+    %c := $t
+Notes:
+  This instruction is the same as SEL but it does not push a return address
+
+
+TAP - tail-call function
+
+Synopsis: pop a pointer to a CLOSURE cell off the data stack;
+          allocate an environment frame of size $n;
+          set the frame&#39;s parent to be the environment frame pointer
+            from the CLOSURE cell;
+          fill the frame&#39;s body with $n values from the data stack;
+          set the current environment frame pointer to the new frame;
+          jump to the code address from the CLOSURE cell;
+Syntax:  TAP $n
+Example: TAP 3      ; number of arguments to copy
+Effect:
+  $x,%s := POP(%s)            ; get and examine function closure
+  if TAG($x) != TAG_CLOSURE then FAULT(TAG_MISMATCH)
+  $f := CAR_CLOSURE($x)
+  $e := CDR_CLOSURE($x)
+  $fp := ALLOC_FRAME($n)      ; create a new frame for the call
+  FRAME_PARENT($fp) := $e
+  $i := $n
+  while $i != 0 do            ; copy n values from the stack into the frame in reverse order
+  begin
+    $y,%s := POP(%s)
+    FRAME_VALUE($fp,$i) := $y
+    $i := $i-1
+  end
+  %e := $fp                   ; establish new environment
+  %c := $f                    ; jump to function
+Notes:
+  This instruction is the same as AP but it does not push a return address
+
+  The latest hardware revision optimizes the case where the environment
+  frame has not been captured by LDF and the number of args $n in the
+  call fit within the current frame. In this case it will overwrite the
+  frame rather than allocating a fresh one.
+
+TRAP - recursive environment tail-call function
+
+Synopsis: pop a pointer to a CLOSURE cell off the data stack;
+          the current environment frame pointer must point to an empty
+            frame of size $n;
+          fill the empty frame&#39;s body with $n values from the data stack;
+          set the current environment frame pointer to the environment
+            frame pointer from the CLOSURE cell;
+          jump to the code address from the CLOSURE cell;
+Syntax:  TRAP $n
+Example: TRAP 3      ; number of arguments to copy
+Effect:
+  $x,%s := POP(%s)            ; get and examine function closure
+  if TAG($x) != TAG_CLOSURE then FAULT(TAG_MISMATCH)
+  $f := CAR_CLOSURE($x)
+  $fp := CDR_CLOSURE($x)
+  if TAG($fp) != TAG_DUM then FAULT(FRAME_MISMATCH)
+  if FRAME_SIZE($fp) != $n then FAULT(FRAME_MISMATCH)
+  $i := $n
+  while $i != 0 do            ; copy n values from the stack into the empty frame in reverse order
+  begin
+    $y,%s := POP(%s)
+    FRAME_VALUE($fp,$i) := $y
+    $i := $i-1
+  end
+  $fpp := FRAME_PARENT($fp)
+  %e := $fp                   ; establish new environment
+  %c := $f                    ; jump to function
+Notes:
+  This instruction is the same as RAP but it does not push a return address</code></pre>
+<h2 id="pascal-extensions">Pascal extensions</h2>
+<pre><code>ST - store to environment
+
+Synopsis: pop a value from the data stack and store to the environment
+Syntax:  ST $n $i
+Example: ST 0 1
+Effect:
+  $fp := %e
+  while $n &gt; 0 do            ; follow chain of frames to get n&#39;th frame
+  begin
+    $fp := FRAME_PARENT($fp)
+    $n := $n-1
+  end
+  $v,%s := POP(%s)           ; pop value from the data stack
+  FRAME_VALUE($fp, $i) := $v ; modify i&#39;th element of frame
+  %c := %c+1</code></pre>
+<h2 id="debug-extensions">Debug extensions</h2>
+<pre><code>DBUG - printf debugging
+
+Synopsis: If tracing is enabled, suspend execution and raise a trace
+          interrupt on the main processor. The main processor will read
+          the value and resume co-processor execution. On resumption
+          the value will be popped from the data stack. If tracing is not
+          enabled the value is popped from the data stack and discarded.
+Syntax:  DBUG
+Effect:
+  $x,%s := POP(%s)
+  %c := %c+1
+Notes:
+  This is the formal effect on the state of the machine. It does
+  also raise an interrupt but this has no effect on the machine state.
+
+BRK - breakpoint debugging
+
+Synopsis: If breakpoint debugging is enabled, suspend execution and raise
+          a breakpoint interrupt on the main processor. The main processor
+          may inspect the state of the co-processor and can resume
+          execution. If breakpoint debugging is not enabled it has no
+          effect.
+Syntax:  BRK
+Effect:
+  %c := %c+1</code></pre>
+<h2 id="examples-1">Examples</h2>
+<p>Although we did not find any code from their higher level language, the instruction reference does include a couple examples. Note that it uses an assembly syntax with symbolic labels rather than absolute instruction addresses, so these programs cannot be executed directly.</p>
+<pre><code>The following GCC programs illustrate the behaviour of some of the
+instructions:</code></pre>
+<h3 id="local.gcc">local.gcc</h3>
+<pre><code>Minimal example of creating and using a local variable.
+
+  LDC  21
+  LDF  body     ; load body
+  AP   1        ; call body with 1 variable in a new frame
+  RTN
+body:
+  LD   0 0      ; var x
+  LD   0 0      ; var x
+  ADD
+  RTN</code></pre>
+<h3 id="goto.gcc">goto.gcc</h3>
+<pre><code>Minimal example of mutual recursion. Note that the recursion in this
+example does not terminate. It will fail with an out of memory error
+due to the stack use.
+
+  DUM  2        ; 2 top-level declarations
+  LDF  go       ; declare function go
+  LDF  to       ; declare function to
+  LDF  main     ; main function
+  RAP  2        ; load declarations into environment and run main
+  RTN           ; final return
+main:
+  LDC  1
+  LD   0 0      ; var go
+  AP   1        ; call go(1)
+  RTN
+to:
+  LD   0 0      ; var n
+  LDC  1
+  SUB
+  LD   1 0      ; var go
+  AP   1        ; call go(n-1)
+  RTN
+go:
+  LD   0 0      ; var n
+  LDC  1
+  ADD
+  LD   1 1      ; var to
+  AP   1        ; call to(n+1)
+  RTN</code></pre>
+<h2 id="the-processorco-processor-interface">The processor/co-processor interface</h2>
+<p>In addition to the basic processor description, we found some documentation on the interface between the main processor and the co-processor.</p>
+<pre><code>On co-processor power up, it is in the halt state with heap and stacks
+initialised to empty.
+
+The primary processor uses the processor/co-processor interface (see
+appendix 3.II) to initialise the code, heap, stacks and registers and
+initiate execution.</code></pre>
+<p>(We don’t actually have appendix 3.II, but fortunately we don’t need it for our software simulation.)</p>
+<pre><code>When execution halts, the co-processor will raise an interrupt
+(implementation defined) in the primary processor. The primary processor
+may use the processor/co-processor interface to inspect the registers,
+stack and heap. It may inspect special status registers to determine the
+reason for execution halting: stop, fault, trace or breakpoint.</code></pre>
+<p>Essentially the main processor sets things up to run, being able to control the full state of the co-processor, then it tells the co-processor to run. When the co-processor halts then the main processor can look at the end state to get the program result. The state of the co-processor is preserved to use in a subsequent run.</p>
+<pre><code>When using the standard ABI, the primary processor may ensure execution
+halts on the final return by installing an entry in the control stack (%d
+register) with the TAG_STOP set.</code></pre>
+<p>The standard calling convention for functions/procedures apparently uses the <code>RTN</code> instruction. So for the main processor to call a function on the co-processor it needs a way to get it to halt after that function returns. The way it does that is by putting a special “stop” entry on the control stack so that when the function returns, instead of jumping to a return address the co-processor simply halts.</p>
+<pre><code>In the standard ABI, the initial entry point is at address 0. The arguments
+and return are implementation defined.</code></pre>
+<p>This is just telling us that by convention the “main” function lives at the beginning of the program code. Whether the main function takes any arguments and what the return type is depend on the application. Fortunately we have the document that explains what these are for the Lambda-Man AI.</p>
+<h2 id="lambda-man-ai-interface">Lambda-Man AI interface</h2>
+<pre><code>For LAMBDAMAN, main is a function with two arguments:
+
+ 1. the initial state of the world, encoded as below
+ 2. undocumented
+
+It returns a pair containing:
+
+ 1. the initial AI state
+ 2. the AI step function (closure)
+
+The AI step function has two arguments:
+
+ 1. the current AI state
+ 2. the current state of the world, encoded as below
+
+It returns a pair containing:
+
+ 1. the current AI state
+ 2. the move, encoded as below
+
+The encoding of the AI state is private. The host should pass the current
+AI state on each step but not otherwise inspect it.</code></pre>
+<p>So what this is telling us is that the AI is implemented as a function that looks at the current state of the game and returns the move it wants Lambda-Man to make. The AI does not have to be completely stateless however, it is able to make use of a private state that it can use and update on each step. It works by returning that new state, and the host (i.e. the game mechanics) is expected to pass that new state to the AI function in the next step. The initial AI state comes from the initial entry point (the ‘main’ function).</p>
+<p>A slightly peculiar thing is that ‘main’ returns the AI step function, rather than that being another “well known” address. Apparently this is the convention that only ‘main’ has a well known address and any other entry points that the host needs must be returned by main. Note that when it says that it returns a function it doesn’t mean a code address but a “CLOSURE cell”. See the <code>LDF</code> and <code>AP</code> instructions for what we know about that.</p>
+<pre><code>The state of the world is encoded as follows:
+
+A 4-tuple consisting of
+
+1. The map;
+2. the status of Lambda-Man;
+3. the status of all the ghosts;
+4. the status of fruit at the fruit location.
+
+The map is encoded as a list of lists (row-major) representing the 2-d
+grid. An enumeration represents the contents of each grid cell:
+
+  * 0: Wall (`#`)
+  * 1: Empty (`&lt;space&gt;`)
+  * 2: Pill 
+  * 3: Power pill
+  * 4: Fruit location
+  * 5: Lambda-Man starting position
+  * 6: Ghost starting position</code></pre>
+<p>For example, this map</p>
+<pre><code>###
+#..</code></pre>
+<p>is encoded as</p>
+<pre><code>[ [ 0, 0, 0 ]
+, [ 0, 2, 2 ]
+]
+
+Note that the map does reflect the current status of all the pills and
+power pills. The map does not however reflect the current location of
+Lambda-Man or the ghosts, nor the presence of fruit. These items are
+represented separately from the map.
+
+The Lambda-Man status is a 5-tuple consisting of:
+  1. Lambda-Man&#39;s vitality;
+  2. Lambda-Man&#39;s current location, as an (x,y) pair;
+  3. Lambda-Man&#39;s current direction;
+  4. Lambda-Man&#39;s remaining number of lives;
+  5. Lambda-Man&#39;s current score.
+
+Lambda-Man&#39;s vitality is a number which is a countdown to the expiry of
+the active power pill, if any. It is 0 when no power pill is active.
+  * 0: standard mode;
+  * n &gt; 0: power pill mode: the number of game ticks remaining while the
+           power pill will will be active
+
+The status of all the ghosts is a list with the status for each ghost.
+The list is in the order of the ghost number, so each ghost always appears
+in the same location in the list.
+
+The status for each ghost is a 3-tuple consisting of
+  1. the ghost&#39;s vitality
+  2. the ghost&#39;s current location, as an (x,y) pair
+  3. the ghost&#39;s current direction
+
+The Ghosts&#39; vitality is an enumeration:
+  * 0: standard;
+  * 1: fright mode;
+  * 2: invisible.
+
+The Ghosts&#39; and Lambda-Man&#39;s direction is an enumeration:
+  * 0: up;
+  * 1: right;
+  * 2: down;
+  * 3: left.
+
+The status of the fruit is a number which is a countdown to the expiry of
+the current fruit, if any.
+  * 0: no fruit present;
+  * n &gt; 0: fruit present: the number of game ticks remaining while the
+           fruit will will be present.
+
+Lambda-Man&#39;s move is a direction as encoded above.</code></pre>
+<p>This document refers to tuples and lists, but of course the only primitive data structure is a CONS cell—a pair. Though it is not clearly specified anywhere, we believe it uses the following encoding for tuples and lists.</p>
+<p>Tuples are encoded as right nested pairs, four example a 4-tuple:</p>
+<pre><code>(a,b,c,d)  is encoded as     (a, (b, (c, d)))
+           which is really   CONS a (CONS b (CONS c d))</code></pre>
+<p>The encoding for a list is also right nested CONS cells, but slightly different in the base case. The empty list is encoded as the integer 0.</p>
+<pre><code>     []  encoded as                          0
+    [c]  encoded as                   CONS c 0
+  [b,c]  encoded as           CONS b (CONS c 0)
+[a,b,c]  encoded as   CONS a (CONS b (CONS c 0))</code></pre>
+<h2 id="example">Example</h2>
+<pre><code>To illustrate the interface, here is an AI that always goes down.
+
+  DUM  2        ; 2 top-level declarations
+  LDC  2        ; declare constant down
+  LDF  step     ; declare function step 
+  LDF  init     ; init function
+  RAP  2        ; load declarations into environment and run init
+  RTN           ; final return
+init:
+  LDC  42
+  LD   0 1      ; var step
+  CONS
+  RTN           ; return (42, step)
+step:
+  LD   0 0      ; var s
+  LDC  1
+  ADD
+  LD   1 0      ; var down
+  CONS
+  RTN           ; return (s+1, down)</code></pre>
+<p>We can see from the code that it also (pointlessly) maintains an integer state (starting from 42) and increments it on every step.</p>
+<h2 id="resource-constraints">Resource constraints</h2>
+<p>The Lambda-Man CPU had a clock speed of 3.072 MHz. Each processor cycle executed exactly one instruction, and each invocation of the Lambda-Man AI was allowed to run for one second before a move was made. In addition, the Lambda-Man AI was given one minute of time for initialization, before the game began.</p>
+<p>From this it follows that each invocation of the AI before a move was allowed to run up to 3072 * 10^3 instructions. We assume that taking any more instructions than this would result in catastrophic failure.</p>
+<p>The main RAM was—for its time—impressively large, and was able to hold 10 million CONS cells to be used by the Lambda-Man AI in the heap. Again, trying to allocate memory over this limit resulted in an error, probably results in catastrophic failure.</p>
+<h2 id="errors-1">Errors</h2>
+<p>During the game, if an instruction causes an error then execution halts and no result is returned. In this case Lambda-Man’s requested move will be the same as its previous move.</p>
+<h1 id="submission-procedure">Submission procedure</h1>
+<p>You do not need to register to enter the competition, but you do need to fill in some details to submit a solution.</p>
+<p>Submission is by filling in a web form with your team details, and a URL and SHA1 checksum of a .zip or .tar.gz file containing your solution. The judges will download the file containing your solution after the closing deadline and compare its SHA1 checksum with the one you provided.</p>
+<ul>
+<li><a href="https://docs.google.com/forms/d/18mRokmlD3woUDuyi-VkCavIBtmKlXRgUcuViOduVm90/viewform">Submission form</a></li>
+</ul>
+<p>We request (but do not strictly require) that you include in your .tar.gz/.zip various additional material:</p>
+<ul>
+<li>All the source code you wrote to help you prepare your solution.</li>
+<li>Any build scripts or other build files needed to run your code.</li>
+<li>Some directions for the judges to tell us how to run your code, including any necessary details of the environment.</li>
+<li>Any documentation/description of your solution that you wish to share with the judges, e.g. the approach you took, why your solution is awesome/funny/quirky/lame, any feedback about the problem or competition.</li>
+</ul>
+<p>It is not essential that the judges be able to run your code, however they will try their best to run it for the top few winning entries and any entries under consideration for the judges’ prize.</p>
+<h2 id="privacy">Privacy</h2>
+<p>Some people will want to show off their participation in the contest while some people will want to take part anonymously. We want to allow both.</p>
+<p>The submission form therefore includes a number of optional fields for extra information about your team that we will publish if you choose to supply it; in particular the names of the members of your team and a URL for a team home page.</p>
+<p>We do ask for contact details but we will not share these with anyone and only use them if we need to get in contact with you.</p>
+<p>We will publish team names and scores/ranks.</p>
+<p>We will not publish your full solution but we encourage you to do so yourself via your team home page after the competition ends. Please do not publish solutions to the lightning round until the full competition ends.</p>
+<p>We may describe details of your solution or additional material during the final contest presentation at ICFP (if it is one of the winning entries or otherwise notable). If there is anything in your solution or additional material that you would like to remain confidential then please make it clear in the notes included in your submission.</p>
+<p>Note that there are some practical constraints on anonymity and confidentially in the case that you happen to win: we need to say something about the winning teams and entries at the contest presentation and it is impossible to pay prize money anonymously. So while you are most welcome to participate while insisting on a high level of confidentiality, it may be impractical to award a prize in that case and the judges may decide to make the award to the next best entry.</p>
+<h2 id="solution-format">Solution format</h2>
+<p>Your submission file (.zip or .tar.gz) should have the following format:</p>
+<ul>
+<li><p>Subdirectory <code>solution</code> that contains your solution file: <code>lambdaman.gcc</code>.</p></li>
+<li><p>Subdirectory <code>code</code> with the source code you wrote to help you prepare your solution and any auxiliary material that can be helpful to the judges to build your code. You should include a <code>README</code> file here with any documentation/description of your solution that you wish to share with the judges.</p></li>
+</ul>
+</body>
+</html>
+
