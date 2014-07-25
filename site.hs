@@ -25,6 +25,7 @@ main = hakyllWith config $ do
 
     match (fromList ["index.markdown"
                     ,"specification.markdown"
+                    ,"reference.markdown"
                     ,"faq.markdown"]) $ do
         route   $ setExtension "html"
         compile $ pandocCompiler
