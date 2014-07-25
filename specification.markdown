@@ -944,7 +944,7 @@ Instruction reference
         $fp := FRAME_PARENT($fp)
         $n := $n-1
       end
-      if TAG($fp) == TAG_DUM then FAULT(FRAME_MISMATCH)
+      if FRAME_TAG($fp) == TAG_DUM then FAULT(FRAME_MISMATCH)
       $v := FRAME_VALUE($fp, $i) ; i'th element of frame
       %s := PUSH($v,%s)          ; push onto the data stack
       %c := %c+1
@@ -1237,7 +1237,8 @@ Instruction reference
     Effect:
       $fp := ALLOC_FRAME($n)       ; create a new empty frame of size $n
       FRAME_PARENT($fp) := %e      ; set its parent frame
-      %e := SET_TAG(TAG_DUM,$fp)   ; set it as the new environment frame
+      FRAME_TAG($fp) := TAG_DUM    ; mark the frame as dummy
+      %e := $fp                    ; set it as the new environment frame
       %c := %c+1
     Notes:
       To be used with RAP to fill in the frame body.
@@ -1261,8 +1262,9 @@ Instruction reference
       if TAG($x) != TAG_CLOSURE then FAULT(TAG_MISMATCH)
       $f := CAR_CLOSURE($x)
       $fp := CDR_CLOSURE($x)
-      if TAG(%e) != TAG_DUM then FAULT(FRAME_MISMATCH)
+      if FRAME_TAG(%e) != TAG_DUM then FAULT(FRAME_MISMATCH)
       if FRAME_SIZE(%e) != $n then FAULT(FRAME_MISMATCH)
+      if %e != $fp then FAULT(FRAME_MISMATCH)
       $i := $n-1
       while $i != -1 do           ; copy n values from the stack into the empty frame in reverse order
       begin
@@ -1273,6 +1275,7 @@ Instruction reference
       $ep := FRAME_PARENT(%e)
       %d := PUSH($ep,%d)                    ; save frame pointer
       %d := PUSH(SET_TAG(TAG_RET,%c+1),%d)  ; save return address
+      FRAME_TAG($fp) := !TAG_DUM            ; mark the frame as normal
       %e := $fp                             ; establish new environment
       %c := $f                              ; jump to function
 
@@ -1360,8 +1363,9 @@ Tail call extensions
       if TAG($x) != TAG_CLOSURE then FAULT(TAG_MISMATCH)
       $f := CAR_CLOSURE($x)
       $fp := CDR_CLOSURE($x)
-      if TAG(%e) != TAG_DUM then FAULT(FRAME_MISMATCH)
+      if FRAME_TAG(%e) != TAG_DUM then FAULT(FRAME_MISMATCH)
       if FRAME_SIZE(%e) != $n then FAULT(FRAME_MISMATCH)
+      if %e != $fp then FAULT(FRAME_MISMATCH)
       $i := $n-1
       while $i != -1 do            ; copy n values from the stack into the empty frame in reverse order
       begin
@@ -1369,6 +1373,7 @@ Tail call extensions
         FRAME_VALUE($fp,$i) := $y
         $i := $i-1
       end
+      FRAME_TAG($fp) := !TAG_DUM
       %e := $fp                   ; establish new environment
       %c := $f                    ; jump to function
     Notes:
@@ -1390,7 +1395,7 @@ Pascal extensions
         $fp := FRAME_PARENT($fp)
         $n := $n-1
       end
-      if TAG($fp) == TAG_DUM then FAULT(FRAME_MISMATCH)
+      if FRAME_TAG($fp) == TAG_DUM then FAULT(FRAME_MISMATCH)
       $v,%s := POP(%s)           ; pop value from the data stack
       FRAME_VALUE($fp, $i) := $v ; modify i'th element of frame
       %c := %c+1
