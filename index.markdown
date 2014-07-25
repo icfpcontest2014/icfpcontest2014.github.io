@@ -7,7 +7,7 @@ News
 
 * We have added some clarifications to the task specification. You can keep
 track of all the changes to the specification by watching the
-[commits to this repository](https://github.com/icfpcontest2014/icfpcontest2014.github.io/commits/master).
+[commits to this repository](https://github.com/icfpcontest2014/icfpcontest2014.github.io/commits/source).
 * We have an [FAQ](faq.html).
 * The contest has started! The task specification is available [here](specification.html).
 
