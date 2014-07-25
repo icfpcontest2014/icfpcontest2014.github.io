@@ -1,15 +1,14 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
-"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-        <title>ICFP Programming Contest 2014 - $title$</title>
+        <title>ICFP Programming Contest 2014 - Specification</title>
         <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen" />
         <link rel="stylesheet" type="text/css" href="stylesheets/pygment_trac.css" media="screen" />
         <link rel="stylesheet" type="text/css" href="stylesheets/print.css" media="print" />
     </head>
-<body>
+    <body>
       <header>
         <div class="container">
           <h1>ICFP Programming Contest 2014</h1>
@@ -20,7 +19,8 @@
       <div class="container">
         <section id="main_content">
           <h1>Specification</h1>
-<h1 id="introduction">Introduction</h1>
+
+          <h1 id="introduction">Introduction</h1>
 <p>For this year’s ICFP programming contest we thought it would be fun to do a bit of ’80s software and hardware archaeology. We just so happen (via friends of friends and bankruptcy asset sales) to have got our hands on a bunch of internal documents from <em>LamCo</em>. Back in the ’80s, LamCo were a failed manufacturer of arcade games. You’ve probably never heard of them because they never managed to get a product out and were beaten by their better known rivals.</p>
 <p>What we’ve found from the cache of documents is that they had some rather interesting technology. We also found that they had a spectacularly dysfunctional development process marked by bitter internal rivalries, which we suspect goes a long way to explain their failed projects.</p>
 <p>So the contest task involves delving into LamCo’s quirky old software and hardware technology, reconstructing the arcade hardware in simulation, and writing software for the arcade platform to play the game—and to play it better than your rivals!</p>
@@ -409,7 +409,7 @@
 </tr>
 </tbody>
 </table>
-<p>The order of ghosts is in increasing order of their starting coordinates, where <code>(x1, y1)</code> is considered smaller than <code>(x2, y2)</code> if <code>y1 &lt; y2'</code> or if <code>y1 = y2'</code> and <code>x1 &lt; x2'</code>.</p>
+<p>The order of ghosts is in increasing order of their starting coordinates, where <code>(x1, y1)</code> is considered smaller than <code>(x2, y2)</code> if <code>y1 &lt; y2</code> or if <code>y1 = y2</code> and <code>x1 &lt; x2</code>.</p>
 <p>The system allows at most 4 ghost programs (but more than 4 ghosts).</p>
 <h1 id="ghost-cpu-ghc">GHost CPU (GHC)</h1>
 <p>The GHost CPU (GHC) is a conventional 8-bit microcontroller. Each ghost is run by a separate GHC. Although we found a complete copy of the CPU manual, it is quite terse in parts, as it assumes the conventions of the day. For those of you who (because of age or youth) do not remember the 1980s, we have tried to explain some of these conventions.</p>
@@ -599,13 +599,13 @@ and a,1        ; Zero all but least significant bit of A.
                ; Now A is 0 if x-ordinate is even, or 1 if it is odd.
 mov b,a        ; Save A in B because we need to use A to set direction.
 mov a,2        ; Move down by default.
-jeq 7,b,1      ; Don&#39;t change anything if x-ordinate is odd.
+jeq 7,b,1      ; Don't change anything if x-ordinate is odd.
 mov a,0        ; We only get here if x-ordinate was even, so move up.
 int 0          ; This is line 7, the target of the above jump. Now actually set the direction.
 hlt            ; Stop.</code></pre>
 <h3 id="fickle.ghc">fickle.ghc</h3>
 <pre><code>; Keep track of how long we have spent travelling in each direction.
-; Try to go in the direction we&#39;ve travelled in least.
+; Try to go in the direction we've travelled in least.
 
                ; Count of time spent going in direction 0 is in memory address 0, and so on.
 mov a,255      ; A is the min value.
@@ -691,12 +691,12 @@ Syntax:  LD $n $i
 Example: LD 0 1
 Effect:
   $fp := %e
-  while $n &gt; 0 do            ; follow chain of frames to get n&#39;th frame
+  while $n &gt; 0 do            ; follow chain of frames to get n'th frame
   begin
     $fp := FRAME_PARENT($fp)
     $n := $n-1
   end
-  $v := FRAME_VALUE($fp, $i) ; i&#39;th element of frame
+  $v := FRAME_VALUE($fp, $i) ; i'th element of frame
   %s := PUSH($v,%s)          ; push onto the data stack
   %c := %c+1
 Notes:
@@ -925,9 +925,9 @@ AP - call function
 
 Synopsis: pop a pointer to a CLOSURE cell off the data stack;
           allocate an environment frame of size $n;
-          set the frame&#39;s parent to be the environment frame pointer
+          set the frame's parent to be the environment frame pointer
             from the CLOSURE cell;
-          fill the frame&#39;s body with $n values from the data stack;
+          fill the frame's body with $n values from the data stack;
           save the stack pointer, environment pointer and return address
             to the control stack;
           set the current environment frame pointer to the new frame;
@@ -999,7 +999,7 @@ RAP - recursive environment call function
 Synopsis: pop a pointer to a CLOSURE cell off the data stack;
           the current environment frame pointer must point to an empty
             frame of size $n;
-          fill the empty frame&#39;s body with $n values from the data stack;
+          fill the empty frame's body with $n values from the data stack;
           save the stack pointer, parent pointer of the current environment
              frame and return address to the control stack;
           set the current environment frame pointer to the environment
@@ -1060,9 +1060,9 @@ TAP - tail-call function
 
 Synopsis: pop a pointer to a CLOSURE cell off the data stack;
           allocate an environment frame of size $n;
-          set the frame&#39;s parent to be the environment frame pointer
+          set the frame's parent to be the environment frame pointer
             from the CLOSURE cell;
-          fill the frame&#39;s body with $n values from the data stack;
+          fill the frame's body with $n values from the data stack;
           set the current environment frame pointer to the new frame;
           jump to the code address from the CLOSURE cell;
 Syntax:  TAP $n
@@ -1096,7 +1096,7 @@ TRAP - recursive environment tail-call function
 Synopsis: pop a pointer to a CLOSURE cell off the data stack;
           the current environment frame pointer must point to an empty
             frame of size $n;
-          fill the empty frame&#39;s body with $n values from the data stack;
+          fill the empty frame's body with $n values from the data stack;
           set the current environment frame pointer to the environment
             frame pointer from the CLOSURE cell;
           jump to the code address from the CLOSURE cell;
@@ -1129,13 +1129,13 @@ Syntax:  ST $n $i
 Example: ST 0 1
 Effect:
   $fp := %e
-  while $n &gt; 0 do            ; follow chain of frames to get n&#39;th frame
+  while $n &gt; 0 do            ; follow chain of frames to get n'th frame
   begin
     $fp := FRAME_PARENT($fp)
     $n := $n-1
   end
   $v,%s := POP(%s)           ; pop value from the data stack
-  FRAME_VALUE($fp, $i) := $v ; modify i&#39;th element of frame
+  FRAME_VALUE($fp, $i) := $v ; modify i'th element of frame
   %c := %c+1</code></pre>
 <h2 id="debug-extensions">Debug extensions</h2>
 <pre><code>DBUG - printf debugging
@@ -1289,13 +1289,13 @@ Lambda-Man or the ghosts, nor the presence of fruit. These items are
 represented separately from the map.
 
 The Lambda-Man status is a 5-tuple consisting of:
-  1. Lambda-Man&#39;s vitality;
-  2. Lambda-Man&#39;s current location, as an (x,y) pair;
-  3. Lambda-Man&#39;s current direction;
-  4. Lambda-Man&#39;s remaining number of lives;
-  5. Lambda-Man&#39;s current score.
+  1. Lambda-Man's vitality;
+  2. Lambda-Man's current location, as an (x,y) pair;
+  3. Lambda-Man's current direction;
+  4. Lambda-Man's remaining number of lives;
+  5. Lambda-Man's current score.
 
-Lambda-Man&#39;s vitality is a number which is a countdown to the expiry of
+Lambda-Man's vitality is a number which is a countdown to the expiry of
 the active power pill, if any. It is 0 when no power pill is active.
   * 0: standard mode;
   * n &gt; 0: power pill mode: the number of game ticks remaining while the
@@ -1306,16 +1306,16 @@ The list is in the order of the ghost number, so each ghost always appears
 in the same location in the list.
 
 The status for each ghost is a 3-tuple consisting of
-  1. the ghost&#39;s vitality
-  2. the ghost&#39;s current location, as an (x,y) pair
-  3. the ghost&#39;s current direction
+  1. the ghost's vitality
+  2. the ghost's current location, as an (x,y) pair
+  3. the ghost's current direction
 
-The Ghosts&#39; vitality is an enumeration:
+The Ghosts' vitality is an enumeration:
   * 0: standard;
   * 1: fright mode;
   * 2: invisible.
 
-The Ghosts&#39; and Lambda-Man&#39;s direction is an enumeration:
+The Ghosts' and Lambda-Man's direction is an enumeration:
   * 0: up;
   * 1: right;
   * 2: down;
@@ -1327,7 +1327,7 @@ the current fruit, if any.
   * n &gt; 0: fruit present: the number of game ticks remaining while the
            fruit will will be present.
 
-Lambda-Man&#39;s move is a direction as encoded above.</code></pre>
+Lambda-Man's move is a direction as encoded above.</code></pre>
 <p>This document refers to tuples and lists, but of course the only primitive data structure is a CONS cell—a pair. Though it is not clearly specified anywhere, we believe it uses the following encoding for tuples and lists.</p>
 <p>Tuples are encoded as right nested pairs, four example a 4-tuple:</p>
 <pre><code>(a,b,c,d)  is encoded as     (a, (b, (c, d)))
