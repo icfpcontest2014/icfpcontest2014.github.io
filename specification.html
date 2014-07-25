@@ -325,41 +325,41 @@
 <td align="left">137</td>
 </tr>
 <tr class="odd">
-<td align="left">Ghost 1</td>
+<td align="left">Ghost 0</td>
 <td align="left">130</td>
 </tr>
 <tr class="even">
-<td align="left">Ghost 2</td>
+<td align="left">Ghost 1</td>
 <td align="left">132</td>
 </tr>
 <tr class="odd">
-<td align="left">Ghost 3</td>
+<td align="left">Ghost 2</td>
 <td align="left">134</td>
 </tr>
 <tr class="even">
-<td align="left">Ghost 4</td>
+<td align="left">Ghost 3</td>
 <td align="left">136</td>
 </tr>
 <tr class="odd">
-<td align="left">Ghost 1 (fright)</td>
+<td align="left">Ghost 0 (fright)</td>
 <td align="left">195</td>
 </tr>
 <tr class="even">
-<td align="left">Ghost 2 (fright)</td>
+<td align="left">Ghost 1 (fright)</td>
 <td align="left">198</td>
 </tr>
 <tr class="odd">
-<td align="left">Ghost 3 (fright)</td>
+<td align="left">Ghost 2 (fright)</td>
 <td align="left">201</td>
 </tr>
 <tr class="even">
-<td align="left">Ghost 4 (fright)</td>
+<td align="left">Ghost 3 (fright)</td>
 <td align="left">204</td>
 </tr>
 </tbody>
 </table>
 <p>On a tick when Lambda-Man or a ghost is scheduled to move, their next move is scheduled for the appropriate number of ticks in the future, depending on their current state. For example if Lambda-Man moves into a square with a pill then the next tick on which he will move will be his previous scheduled tick number plus 137.</p>
-<p>When there are more than 4 ghosts, these ticks-per-move values are assigned cyclically, such that ghost 5 takes on the values of ghost 1, and so on.</p>
+<p>When there are more than 4 ghosts, these ticks-per-move values are assigned cyclically, such that ghost 4 takes on the values of ghost 0, and so on.</p>
 <p>No other event or condition resets the scheduled tick for Lambda-Man or the ghosts (not even entering fright mode, ghosts being eaten, or Lambda-Man being eaten).</p>
 <h2 id="movement">Movement</h2>
 <p>The Lambda-Man can move into any adjacent square that is not occupied by a wall. An adjacent square is one that is up, down, left, or right of another.</p>
@@ -395,25 +395,25 @@
 </thead>
 <tbody>
 <tr class="odd">
-<td align="left">ghost 1</td>
+<td align="left">ghost 0</td>
 <td align="left">program 1</td>
 </tr>
 <tr class="even">
-<td align="left">ghost 2</td>
+<td align="left">ghost 1</td>
 <td align="left">program 2</td>
 </tr>
 <tr class="odd">
-<td align="left">ghost 3</td>
+<td align="left">ghost 2</td>
 <td align="left">program 1</td>
 </tr>
 <tr class="even">
-<td align="left">ghost 4</td>
+<td align="left">ghost 3</td>
 <td align="left">program 2</td>
 </tr>
 </tbody>
 </table>
 <p>The order of ghosts is in increasing order of their starting coordinates, where <code>(x1, y1)</code> is considered smaller than <code>(x2, y2)</code> if <code>y1 &lt; y2</code> or if <code>y1 = y2</code> and <code>x1 &lt; x2</code>.</p>
-<p>The system allows at most 4 ghost programs (but up to 256 ghosts).</p>
+<p>The system allows at most 4 ghost programs (but up to 256 ghosts, numbered 0-255).</p>
 <h1 id="ghost-cpu-ghc">GHost CPU (GHC)</h1>
 <p>The GHost CPU (GHC) is a conventional 8-bit microcontroller. Each ghost is run by a separate GHC. Although we found a complete copy of the CPU manual, it is quite terse in parts, as it assumes the conventions of the day. For those of you who (because of age or youth) do not remember the 1980s, we have tried to explain some of these conventions.</p>
 <h2 id="ghc-state">GHC State</h2>
@@ -521,7 +521,7 @@
 <li>Register <code>B</code>: indexed ghost’s starting y-ordinate</li>
 </ul></li>
 </ul>
-<p>For the ghost with index read from register <code>A</code>, stores its starting position in registers <code>A</code> (x-ordinate) and <code>B</code> (y-ordinate).</p></li>
+<p>For the ghost with index read from register <code>A</code>, stores its starting position in registers <code>A</code> (x-ordinate) and <code>B</code> (y-ordinate). If <code>A</code> is not a valid ghost index, does nothing.</p></li>
 <li><p><code>INT 5</code></p>
 <ul>
 <li>In:
@@ -534,7 +534,7 @@
 <li>Register <code>B</code>: indexed ghost’s current y-ordinate</li>
 </ul></li>
 </ul>
-<p>For the ghost with index read from register <code>A</code>, stores its current position in registers <code>A</code> (x-ordinate) and <code>B</code> (y-ordinate).</p></li>
+<p>For the ghost with index read from register <code>A</code>, stores its current position in registers <code>A</code> (x-ordinate) and <code>B</code> (y-ordinate). If <code>A</code> is not a valid ghost index, does nothing.</p></li>
 <li><p><code>INT 6</code></p>
 <ul>
 <li>In:
@@ -553,7 +553,8 @@ Vitality:
 <li>0: standard;</li>
 <li>1: fright mode;</li>
 <li>2: invisible.</li>
-</ul></li>
+</ul>
+<p>If <code>A</code> is not a valid ghost index, does nothing.</p></li>
 <li><p><code>INT 7</code></p>
 <ul>
 <li>In:

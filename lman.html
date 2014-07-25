@@ -167,11 +167,9 @@
 </script>
 </head>
 <body>
-<body>
       <header>
         <div class="container">
           <h1>ICFP Programming Contest 2014</h1>
-          <h2></h2>
 
         </div>
       </header>
@@ -180,7 +178,16 @@
         <h2> Lambda-Man CPU Simulator </h2>
         <div id="programpane">
           <h3 id="input"> Program </h3>
-          <textarea id = "program" rows="30" cols="30"></textarea>
+<textarea id = "program" rows="30" cols="50">
+LDC  21
+LDF  4    ; load body
+AP   1    ; call body with 1 variable in a new frame
+RTN
+LD   0 0  ; var x    :body
+LD   0 0  ; var x
+ADD
+RTN
+</textarea>
           <div id="buttons">
             <button id="load" type="button"> Load </button>
             <button class = "run" id="step" type="button"> Step </button>
@@ -216,6 +223,5 @@
           ga('send', 'pageview');
 
       </script>
-</body>
 </body>
 </html>
