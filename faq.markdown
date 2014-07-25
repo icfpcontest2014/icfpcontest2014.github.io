@@ -19,3 +19,9 @@ title: FAQ
     his next move right after he moves, which is before the fruit appears, so he
     technically isn't eating at that stage.
 
+ 2. **Question:** Do ghost programs get executed every tick or just the ticks
+    when the ghost is scheduled to move?
+
+    **Answer:** Only on the ticks when the ghost is scheduled to move. We have
+    updated that paragraph in the spec to be less confusing.
+
