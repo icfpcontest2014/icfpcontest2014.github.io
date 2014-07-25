@@ -33,7 +33,7 @@
 <p>So far we (that is, the judges) have a software simulation of the arcade hardware. What we want you to do is to write the software to run on the arcade hardware.</p>
 <h2 id="lightning-round-summary">Lightning Round Summary</h2>
 <p>For the lightning round we will play the “classic” version of the game where it is just a single Lambda-Man against the ghosts.</p>
-<p>Your challenge is is to write an AI for the Lambda-Man. It will play against ghost AIs supplied by the judges and in mazes supplied by the judges.</p>
+<p>Your challenge is to write an AI for the Lambda-Man. It will play against ghost AIs supplied by the judges and in mazes supplied by the judges.</p>
 <p>You will be supplied with several of the mazes and with the assembly code for a few (not very smart) ghost AIs.</p>
 <p>The lightning round runs for the first 24 hours of the competition, so submissions must be in before <a href="http://www.timeanddate.com/countdown/generic?p0=1440&amp;iso=20140726T12&amp;msg=ICFP%20Programming%20Contest%202014%20Lightning%20Round">12:00 UTC 26/07/2014</a>.</p>
 <h2 id="full-round-summary">Full Round Summary</h2>
@@ -103,7 +103,7 @@
 <p>The world is entirely deterministic, and runs on a tick-by-tick basis.</p>
 <p>On each tick:</p>
 <ol style="list-style-type: decimal">
-<li><p>All Lambda-Man and ghost moves scheduled for this tick take place. (Note that Lambda-Man and the ghosts do not move every tick, only every few ticks; see the <a href="#ticks">ticks section</a> below.)</p></li>
+<li><p>All Lambda-Man and ghost moves scheduled for this tick take place. The next move is also scheduled at this point. (Note that Lambda-Man and the ghosts do not move every tick, only every few ticks; see the <a href="#ticks">ticks section</a> below.)</p></li>
 <li><p>Next, any actions (fright mode deactivating, fruit appearing/disappearing) take place.</p></li>
 <li><p>Next, we check if Lambda-Man is occupying the same square as pills, power pills, or fruit:</p>
 <ol style="list-style-type: decimal">
@@ -1401,7 +1401,7 @@ step:
 <p>Your submission file (.zip or .tar.gz) should have the following format:</p>
 <ul>
 <li><p>Subdirectory <code>solution</code> that contains your solution file: <code>lambdaman.gcc</code>.</p></li>
-<li><p>Subdirectory <code>code</code> with the source code you wrote to help you prepare your solution and any auxiliary material that can be helpful to the judges to build your code. You should include a <code>README</code> file here with any documentation/description of your solution that you wish to share with the judges.</p></li>
+<li><p>Subdirectory <code>code</code> with the source code you wrote to help you prepare your solution and any auxiliary material that can be helpful to the judges to build your code. You should include a <code>README</code> file in this subdirectory with any documentation/description of your solution that you wish to share with the judges.</p></li>
 </ul>
         </section>
       </div>
