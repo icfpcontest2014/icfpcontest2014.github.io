@@ -325,40 +325,41 @@
 <td align="left">137</td>
 </tr>
 <tr class="odd">
-<td align="left">Ghost AI 1</td>
+<td align="left">Ghost 1</td>
 <td align="left">130</td>
 </tr>
 <tr class="even">
-<td align="left">Ghost AI 2</td>
+<td align="left">Ghost 2</td>
 <td align="left">132</td>
 </tr>
 <tr class="odd">
-<td align="left">Ghost AI 3</td>
+<td align="left">Ghost 3</td>
 <td align="left">134</td>
 </tr>
 <tr class="even">
-<td align="left">Ghost AI 4</td>
+<td align="left">Ghost 4</td>
 <td align="left">136</td>
 </tr>
 <tr class="odd">
-<td align="left">Ghost AI 1 (fright)</td>
+<td align="left">Ghost 1 (fright)</td>
 <td align="left">195</td>
 </tr>
 <tr class="even">
-<td align="left">Ghost AI 2 (fright)</td>
+<td align="left">Ghost 2 (fright)</td>
 <td align="left">198</td>
 </tr>
 <tr class="odd">
-<td align="left">Ghost AI 3 (fright)</td>
+<td align="left">Ghost 3 (fright)</td>
 <td align="left">201</td>
 </tr>
 <tr class="even">
-<td align="left">Ghost AI 4 (fright)</td>
+<td align="left">Ghost 4 (fright)</td>
 <td align="left">204</td>
 </tr>
 </tbody>
 </table>
-<p>On a tick when Lambda-Man or a ghost is scheduled to move, their next move is scheduled for the appropirate number of ticks in the future, depending on their current state. For example if Lambda-Man moves into a square with a pill then the next tick on which he will move will be his previous scheduled tick number plus 137.</p>
+<p>On a tick when Lambda-Man or a ghost is scheduled to move, their next move is scheduled for the appropriate number of ticks in the future, depending on their current state. For example if Lambda-Man moves into a square with a pill then the next tick on which he will move will be his previous scheduled tick number plus 137.</p>
+<p>When there are more than 4 ghosts, these ticks-per-move values are assigned cyclically, such that ghost 5 takes on the values of ghost 1, and so on.</p>
 <p>No other event or condition resets the scheduled tick for Lambda-Man or the ghosts (not even entering fright mode, ghosts being eaten, or Lambda-Man being eaten).</p>
 <h2 id="movement">Movement</h2>
 <p>The Lambda-Man can move into any adjacent square that is not occupied by a wall. An adjacent square is one that is up, down, left, or right of another.</p>
@@ -412,7 +413,7 @@
 </tbody>
 </table>
 <p>The order of ghosts is in increasing order of their starting coordinates, where <code>(x1, y1)</code> is considered smaller than <code>(x2, y2)</code> if <code>y1 &lt; y2</code> or if <code>y1 = y2</code> and <code>x1 &lt; x2</code>.</p>
-<p>The system allows at most 4 ghost programs (but more than 4 ghosts).</p>
+<p>The system allows at most 4 ghost programs (but up to 256 ghosts).</p>
 <h1 id="ghost-cpu-ghc">GHost CPU (GHC)</h1>
 <p>The GHost CPU (GHC) is a conventional 8-bit microcontroller. Each ghost is run by a separate GHC. Although we found a complete copy of the CPU manual, it is quite terse in parts, as it assumes the conventions of the day. For those of you who (because of age or youth) do not remember the 1980s, we have tried to explain some of these conventions.</p>
 <h2 id="ghc-state">GHC State</h2>
@@ -930,7 +931,7 @@ Synopsis: pop a pointer to a CLOSURE cell off the data stack;
           set the frame's parent to be the environment frame pointer
             from the CLOSURE cell;
           fill the frame's body with $n values from the data stack;
-          save the stack pointer, environment pointer and return address
+          save the environment pointer and return address
             to the control stack;
           set the current environment frame pointer to the new frame;
           jump to the code address from the CLOSURE cell;
@@ -1002,8 +1003,8 @@ Synopsis: pop a pointer to a CLOSURE cell off the data stack;
           the current environment frame pointer must point to an empty
             frame of size $n;
           fill the empty frame's body with $n values from the data stack;
-          save the stack pointer, parent pointer of the current environment
-             frame and return address to the control stack;
+          save the parent pointer of the current environment frame
+             and return address to the control stack;
           set the current environment frame pointer to the environment
             frame pointer from the CLOSURE cell;
           jump to the code address from the CLOSURE cell;
@@ -1014,8 +1015,8 @@ Effect:
   if TAG($x) != TAG_CLOSURE then FAULT(TAG_MISMATCH)
   $f := CAR_CLOSURE($x)
   $fp := CDR_CLOSURE($x)
-  if TAG($fp) != TAG_DUM then FAULT(FRAME_MISMATCH)
-  if FRAME_SIZE($fp) != $n then FAULT(FRAME_MISMATCH)
+  if TAG(%e) != TAG_DUM then FAULT(FRAME_MISMATCH)
+  if FRAME_SIZE(%e) != $n then FAULT(FRAME_MISMATCH)
   $i := $n-1
   while $i != -1 do           ; copy n values from the stack into the empty frame in reverse order
   begin
@@ -1023,8 +1024,8 @@ Effect:
     FRAME_VALUE($fp,$i) := $y
     $i := $i-1
   end
-  $fpp := FRAME_PARENT($fp)
-  %d := PUSH($fpp,%d)                   ; save frame pointer
+  $ep := FRAME_PARENT(%e)
+  %d := PUSH($ep,%d)                    ; save frame pointer
   %d := PUSH(SET_TAG(TAG_RET,%c+1),%d)  ; save return address
   %e := $fp                             ; establish new environment
   %c := $f                              ; jump to function
@@ -1109,8 +1110,8 @@ Effect:
   if TAG($x) != TAG_CLOSURE then FAULT(TAG_MISMATCH)
   $f := CAR_CLOSURE($x)
   $fp := CDR_CLOSURE($x)
-  if TAG($fp) != TAG_DUM then FAULT(FRAME_MISMATCH)
-  if FRAME_SIZE($fp) != $n then FAULT(FRAME_MISMATCH)
+  if TAG(%e) != TAG_DUM then FAULT(FRAME_MISMATCH)
+  if FRAME_SIZE(%e) != $n then FAULT(FRAME_MISMATCH)
   $i := $n
   while $i != 0 do            ; copy n values from the stack into the empty frame in reverse order
   begin
@@ -1118,7 +1119,6 @@ Effect:
     FRAME_VALUE($fp,$i) := $y
     $i := $i-1
   end
-  $fpp := FRAME_PARENT($fp)
   %e := $fp                   ; establish new environment
   %c := $f                    ; jump to function
 Notes:
