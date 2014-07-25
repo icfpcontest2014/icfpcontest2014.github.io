@@ -1253,8 +1253,8 @@ Instruction reference
       if TAG($x) != TAG_CLOSURE then FAULT(TAG_MISMATCH)
       $f := CAR_CLOSURE($x)
       $fp := CDR_CLOSURE($x)
-      if TAG($fp) != TAG_DUM then FAULT(FRAME_MISMATCH)
-      if FRAME_SIZE($fp) != $n then FAULT(FRAME_MISMATCH)
+      if TAG(%e) != TAG_DUM then FAULT(FRAME_MISMATCH)
+      if FRAME_SIZE(%e) != $n then FAULT(FRAME_MISMATCH)
       $i := $n-1
       while $i != -1 do           ; copy n values from the stack into the empty frame in reverse order
       begin
@@ -1262,8 +1262,8 @@ Instruction reference
         FRAME_VALUE($fp,$i) := $y
         $i := $i-1
       end
-      $fpp := FRAME_PARENT($fp)
-      %d := PUSH($fpp,%d)                   ; save frame pointer
+      $ep := FRAME_PARENT(%e)
+      %d := PUSH($ep,%d)                    ; save frame pointer
       %d := PUSH(SET_TAG(TAG_RET,%c+1),%d)  ; save return address
       %e := $fp                             ; establish new environment
       %c := $f                              ; jump to function
