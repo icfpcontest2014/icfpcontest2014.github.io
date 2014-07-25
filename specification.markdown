@@ -126,9 +126,12 @@ game rules and the Lambda-Man processor.
 This site also contains other reference material that you might find
 useful, such as sample maps.
 
-If you find any discrepancies between this specification document and the
-reference implementation (or other material), then please let the judges know
-as soon as possible!
+Please note that the reference implementation is provided just as a convenience.
+We cannot guarantee that it is correct, or that it will always be available.
+However, if you
+find any discrepancies between this specification document and the reference
+implementation (or other material), then please let the judges know as soon as
+possible, and we will do our best to keep things updated.
 
 
 The Lambda-Man game rules
