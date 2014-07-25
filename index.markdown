@@ -5,8 +5,7 @@ title: Home
 News
 ----
 
-* The contest starts in <iframe src="http://free.timeanddate.com/countdown/i494s4lr/n1440/cf11/cm0/cu4/ct4/cs0/ca0/co0/cr0/ss0/cacfff/cpcf00/pct/tcfff/fn3/fs80/szw320/szh135/iso2014-07-25T12:00:00" frameborder="0" width="240" height="16"></iframe>.
-Time to stock up on food and drink; don't forget to buy plenty of fruit!
+* The contest has started! The task specification is available [here](specification.html).
 
 
 Welcome

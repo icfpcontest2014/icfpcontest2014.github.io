@@ -1,0 +1,274 @@
+<html>
+<head>
+<link href="stylesheets/stylesheet2.css" rel="stylesheet" type="text/css">
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+<script language="javascript" src="javascripts/game.js"></script>
+
+<script type="text/javascript"> 
+  // Grid dimensions in pixels
+  var width = 20
+  var height = 20
+
+  // globals
+  var broken
+  var state
+
+  function load (){
+    // Set globals
+    broken = true
+    $("#break").unbind().html("Run").attr("id", "runAll")
+    $("#runAll").click(run)
+    var lambdaman = $("#lambda").val()
+    var map       = $("#map").val()
+    var ghosts    = $(".g").map(function(){return this.value}).get()
+    state = loadGame(map, lambdaman, ghosts)
+    if (state.error != null){
+      updateStatus("Error: " + state.error) 
+    }
+    else {
+      $(".run").removeAttr("disabled")
+      $("#trace").empty()
+      $("#status").empty()
+      setupBoard()
+      updateStatus("Program Loaded")
+      updateBoard(true)
+      updateState()
+    }
+  }
+
+  function stepProg(o){
+    h$runSync( h$c2( h$ap1_e
+                   , h$mainZCMainzigameStepWrapper
+                   , h$c1(h$ghcjszmprimZCGHCJSziPrimziJSRef_con_e, o)
+                   )
+             , false
+             );
+  }
+
+  function loadGame (gameBoard, lmanProg, gs){
+    var o = { gameboard: gameBoard, lmanprog: lmanProg, ghostprogs: gs };
+
+    h$runSync( h$c2( h$ap1_e
+                   , h$mainZCMainziloadGameWrapper
+                   , h$c1(h$ghcjszmprimZCGHCJSziPrimziJSRef_con_e, o)
+                   )
+             , false
+             );
+    return o;
+  }
+
+  function setupBoard(){
+    var board = state.board
+    var y = board.length * width
+    var x = board[0].length * height
+    var maze = document.getElementById("maze")
+    maze.width = x
+    maze.height = y
+  }
+
+  function updateBoard(firsttime){
+    var board = state.board
+    var y = board.length
+    var x = board[0].length
+
+    var ctx = document.getElementById("maze").getContext("2d")
+    var img = document.getElementById("alltiles")
+
+    for (var j = 0; j < y; j++){
+      for (var i = 0; i < x; i ++) {
+        var tileno = board[j][i]
+        if (tileno != 0 || firsttime) {
+          ctx.drawImage(img, tileno * width, 0, width, height, i * width, j * height, width, height)
+        }
+      }
+    }
+  }
+
+  function step(){
+    runStep()
+    updateState()
+    updateStatus("Single step")
+  }
+
+  function runStep(){
+    stepProg(state)
+    if (state.gameOver == true){
+      breakRun()
+      victor = state.gameWin ? "You won" : "You lost"
+      $(".run").attr("disabled", "disabled") 
+      updateState()
+      updateBoard(false)
+      updateStatus("Game Over: " + victor)
+    }
+    else {
+      updateState()
+      updateBoard(false)
+    } 
+   }
+
+  function run(){
+    broken = false
+    $("#runAll").html("Break").unbind().attr("id", "break")
+    $("#break").click(breakRun)
+    updateStatus("Game running")
+    runLoop()
+  }
+
+  function runLoop(){
+    if (! broken){
+      runStep()
+      setTimeout(runLoop, 50)
+    }
+  }
+    
+  function breakRun(){
+    broken = true
+    $("#break").unbind().html("Run").attr("id", "runAll")
+    updateStatus("Broken by user")
+    updateState()
+    $("#runAll").click(run)
+  }
+
+  function updateState(){
+    $("#lives").html(state.lives)
+    $("#ticks").html(state.ticks)
+    $("#score").html(state.score)
+    if (state.traceval != null) {
+      for (var index = 0; index < state.traceval.length; ++index) {
+        output(state.traceval[index]);
+      }
+    }
+  }
+  
+  function updateStatus(s){
+    $("#status").html(s)
+  }
+
+  function output(v){
+    $("#trace").append(v + "<br>")
+  }
+
+  $(document).ready(function(){
+    $(".run").attr("disabled", "disabled")
+    $("#load").click(load)
+    $("#step").click(step)
+    $("#runAll").click(run)
+  })
+
+  
+</script>
+</head>
+<body>
+<body>
+      <header>
+        <div class="container">
+          <h1>ICFP Programming Contest 2014</h1>
+          <h2></h2>
+
+        </div>
+      </header>
+      <div class="container">
+        <section id="main_content">
+          <h2> Input </h2>
+          <div id="inputs">
+            <textarea class="twrap" id="lambda" placeholder="Lambda-Man program">
+LDC  0
+LDF  4
+CONS
+RTN
+LDC  0
+LDC  1
+CONS
+RTN
+</textarea>
+            <textarea class="twrap" id="map" placeholder="Map">
+#######################
+#..........#..........#
+#.###.####.#.####.###.#
+#o###.####.#.####.###o#
+#.....................#
+#.###.#.#######.#.###.#
+#.....#....#....#.....#
+#####.#### # ####.#####
+#   #.#    =    #.#   #
+#####.# ### ### #.#####
+#    .  # === #  .    #
+#####.# ####### #.#####
+#   #.#    %    #.#   #
+#####.# ####### #.#####
+#..........#..........#
+#.###.####.#.####.###.#
+#o..#......\......#..o#
+###.#.#.#######.#.#.###
+#.....#....#....#.....#
+#.########.#.########.#
+#.....................#
+#######################
+</textarea>
+            <div id="ghosts">
+<textarea class="twrap g" placeholder = "Ghost program 1">
+mov a,255  
+mov b,0    
+mov c,255  
+           
+inc c      
+jgt 7,[c],a
+           
+mov a,[c]  
+mov b,c    
+jlt 3,c,3  
+
+mov a,b    
+int 0
+
+int 3      
+int 6      
+inc [b]    
+hlt    
+</textarea>
+              <textarea class="twrap g" placeholder = "Ghost program 2"></textarea>
+              <textarea class="twrap g" placeholder = "Ghost program 3"></textarea>
+              <textarea class="twrap g" placeholder = "Ghost program 4"></textarea>
+            </div>
+          </div>
+        <div id="buttons">
+          <button id="load" type="button"> Load </button>
+          <button class = "run" id="step" type="button"> Step </button>
+          <button class = "run"id="runAll" type="button"> Run  </button>
+        </div>
+        <section id="sim">
+          <h2> Game </h2>
+          <canvas id="maze" width="200" height="200"></canvas>
+          <img src="images/alltiles.png" id="alltiles">
+          <div id = "status"> No Program Loaded </div>
+          <h5> State </h5>
+          <div id = "state"> 
+            Score: <span id="score">0</span> 
+            Lives: <span id="lives">0</span> 
+            Ticks: <span id="ticks">0</span> 
+          </div>
+          <h5> Trace output </h5>
+          <div id = "trace"> </div>
+        </section>
+        </section>
+      </div>
+      <footer>
+      Site proudly generated by
+      <a href="http://jaspervdj.be/hakyll">Hakyll</a>
+      using
+      <a href="http://www.haskell.org">Haskell</a>
+      </footer>
+  
+      <script>
+          (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+          (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+          })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+          ga('create', 'UA-53160382-1', 'auto');
+          ga('send', 'pageview');
+
+      </script>
+</body>
+</body>
+</html>
