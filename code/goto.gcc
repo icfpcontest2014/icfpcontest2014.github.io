@@ -1,0 +1,22 @@
+  DUM  2        ; 2 top-level declarations
+  LDF  16       ; declare function go
+  LDF  10       ; declare function to
+  LDF  6        ; main function
+  RAP  2        ; load declarations into environment and run main
+  RTN           ; final return
+  LDC  1
+  LD   0 0      ; var go
+  AP   1        ; call go(1)
+  RTN
+  LD   0 0      ; var n
+  LDC  1
+  SUB
+  LD   1 0      ; var go  <-- HERE
+  AP   1        ; call go(n-1)
+  RTN
+  LD   0 0      ; var n
+  LDC  1
+  ADD
+  LD   1 1      ; var to <-- AND HERE
+  AP   1        ; call to(n+1)
+  RTN
