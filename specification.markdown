@@ -429,7 +429,7 @@ The order of ghosts is in increasing order of their starting coordinates, where
 `(x1, y1)` is considered smaller than `(x2, y2)` if `y1 < y2` or if `y1 = y2` and
 `x1 < x2`.
 
-The system allows at most 4 ghost programs (but more than 4 ghosts).
+The system allows at most 4 ghost programs (but up to 256 ghosts).
 
 
 GHost CPU (GHC)
