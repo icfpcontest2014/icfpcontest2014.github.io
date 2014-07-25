@@ -420,7 +420,20 @@
 <p>Each register holds an 8-bit unsigned integer (between 0 and 255 inclusive). There are 2 separate memories: a data memory and a code memory, each with 256 locations (numbered from 0 to 255 inclusive). Hence the contents of a register can be interpreted directly as a data memory address, the contents of a data memory location, or a code memory address. The GHC performs all arithmetic modulo 256, so 255 + 1 = 0.</p>
 <h2 id="initialisation-and-program-execution">Initialisation and Program Execution</h2>
 <p>At the start of a game, the GHC’s code memory is initialised with a program, as described in the section <a href="#code-format">Code Format</a>. The contents of the code memory does not change during a game. All data memory locations and all registers are initialised to 0.</p>
-<p>During each game cycle, the GHC runs the program, executing up to 1024 instructions: the game cycle is divided into 1024 execution cycles. At the start of each game cycle, the PC is initialised to 0. An execution cycle begins with the GHC reading the instruction at the address referenced by the PC from code memory. It executes the instruction, as described in the section <a href="#instructionReference">Instruction Reference</a>, possibly changing the contents of the data memory and registers. At the end of the execution cycle, if the value of the PC is the same as it was at the start of the execution cycle, the GHC increments it. Execution terminates at the end of an execution cycle if: the instruction executed was HLT; it was the 1024th execution cycle of the game cycle; or execution of the instruction caused an error. The contents of the data memory and registers persist between game cycles.</p>
+<p>On a game tick when ghost is scheduled to move, the GHC runs the program, executing up to 1024 instructions:</p>
+<ul>
+<li>At the start of program execution, the PC is initialised to 0.</li>
+<li>An instruction cycle begins with the GHC reading the instruction at the address referenced by the PC from code memory.</li>
+<li>It executes the instruction, as described in the section <a href="#instructionReference">Instruction Reference</a>, possibly changing the contents of the data memory and registers.</li>
+<li>At the end of the instruction cycle, if the value of the PC is the same as it was at the start of the instruction cycle, the GHC increments it.</li>
+<li>Execution terminates at the end of an instruction cycle if:
+<ul>
+<li>the instruction executed was HLT;</li>
+<li>it was the 1024th instruction executed;</li>
+<li>or execution of the instruction caused an error.</li>
+</ul></li>
+<li>The contents of the data memory and registers persist between game ticks.</li>
+</ul>
 <h2 id="code-format">Code Format</h2>
 <p>By convention, a GHC program is stored in a file with the extension .ghc (GHost Code).</p>
 <p>A program consists of several lines, terminated by newline characters. The contents of a line are whitespace insensitive: multiple consecutive whitespace characters are treated identically to one. A line is either empty (containing only whitespace) or contains an instruction.</p>
