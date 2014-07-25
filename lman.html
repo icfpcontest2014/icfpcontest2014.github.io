@@ -1,0 +1,211 @@
+<html>
+<head>
+<link href="stylesheets/stylesheet2.css" rel="stylesheet" type="text/css">
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+
+<!--<script language="javascript" src="lib.js"></script>
+<script language="javascript" src="rts.js"></script>
+<script language="javascript" src="lib1.js"></script>
+<script language="javascript" src="out.js"></script>-->
+<script language="javascript" src="lman.js"></script>
+
+<script type="text/javascript"> 
+  function load (){
+    // Set globals
+    state = { state : initState (), stop_reason : "TraceStep", traceval : null, faultcode : null}
+    broken = false
+    var res = parseProg($("#program").val())
+    if (res.error != null){
+      prog = null
+      $(".run").attr("disabled", "disabled")
+      $("#trace").empty()
+      $("#state").empty()
+      updateStatus("Error: " + res.error) 
+    }
+    else {
+      prog = res.prog
+      $(".run").removeAttr("disabled")
+      $("#trace").empty()
+      updateStatus("Program Loaded")
+      updateState()
+    }
+  }
+
+  // Wrapper function :: String -> Prog
+  function initState () {
+    var o = { };
+    h$runSync( h$c2( h$ap1_e
+                   , h$mainZCMainziinitStateWrapper
+                   , h$c1(h$ghcjszmprimZCGHCJSziPrimziJSRef_con_e, o)
+                   )
+             , false
+             );
+    return o.state
+  }
+
+  // Wrapper function :: String -> Prog
+  function parseProg (s) {
+    var o = { progstr: s };
+    h$runSync( h$c2( h$ap1_e
+                   , h$mainZCMainziloadWrapper
+                   , h$c1(h$ghcjszmprimZCGHCJSziPrimziJSRef_con_e, o)
+                   )
+             , false
+             );
+    return o
+  }
+  
+  // Wrapper function :: Prog -> State -> ExecStep
+  function stepProg(prog, stateval, singlestep){
+    var o = { prog: prog, state: stateval, singlestep: singlestep };
+    h$runSync( h$c2( h$ap1_e
+                   , h$mainZCMainzirunStepWrapper
+                   , h$c1(h$ghcjszmprimZCGHCJSziPrimziJSRef_con_e, o)
+                   )
+             , false
+             );
+    return { state: o.state, stop_reason : o.stop_reason,
+             traceval : o.traceval, faultcode : o.faultcode }
+  }
+
+  function renderState (prog, state) {
+    var o = { prog: prog, state: state };
+    h$runSync( h$c2( h$ap1_e
+                   , h$mainZCMainzirenderStateWrapper
+                   , h$c1(h$ghcjszmprimZCGHCJSziPrimziJSRef_con_e, o)
+                   )
+             , false
+             );
+    return o.html;
+  }
+
+  function runStep(){
+    state = stepProg(prog, state.state, broken)
+    handleReason(state)
+  }
+  
+  function step(){
+    runStep()
+    updateState()
+  }
+    
+  function run(){
+    broken = false
+    state.stop_reason = "TraceStep"
+    $("#runAll").html("Break").unbind().attr("id", "break")
+    $("#break").click(breakRun)
+    runLoop()
+  }
+
+  function runLoop(){
+    if ((state.stop_reason == "TraceStep" || state.stop_reason == "TraceTrace" )
+       && ! broken){
+      runStep()
+      setTimeout(runLoop, 0)
+    }
+  }
+    
+  
+  function breakRun(){
+    broken = true
+    $("#break").unbind().html("Run").attr("id", "runAll")
+    updateStatus("Broken by user")
+    updateState()
+    $("#runAll").click(run)
+  }
+
+  function updateState(){
+    $("#state").html(renderState(prog, state.state))
+  }
+  
+  function updateStatus(s){
+    $("#status").html(s)
+  }
+
+  function output(v){
+    $("#trace").append(v + "<br>")
+  }
+
+  function handleReason(){
+    switch (state.stop_reason){
+      case "TraceStop":
+        breakRun()
+        $(".run").attr("disabled", "disabled") 
+        $("#status").html("Finished Execution")
+        updateState()
+        break
+      case "TraceTrace":
+        output(state.traceval)
+        updateStatus("Running Program")
+        break
+      case "TraceBreak":
+        breakRun()
+        updateStatus("Breakpoint")
+        updateState()
+        break
+      case "TraceStep":
+        updateStatus("Running Program")
+        break
+      case "TraceFault":
+        breakRun()
+        $(".run").attr("disabled", "disabled") 
+        updateState()
+        updateStatus("Fault: " + state.faultcode)
+        break
+    }
+  }
+
+  $(document).ready(function(){
+    $(".run").attr("disabled", "disabled")
+    $("#load").click(load)
+    $("#step").click(step)
+    $("#runAll").click(run)
+  })
+
+  
+</script>
+</head>
+<body>
+<body>
+      <header>
+        <div class="container">
+          <h1>ICFP Programming Contest 2014</h1>
+          <h2></h2>
+
+        </div>
+      </header>
+      <div class="container">
+        <section id="main_content">
+        <h2> Lambda-Man CPU Simulator </h2>
+        <div id="programpane">
+          <h3 id="input"> Program </h3>
+          <textarea id = "program" rows="30" cols="30"></textarea>
+          <div id="buttons">
+            <button id="load" type="button"> Load </button>
+            <button class = "run" id="step" type="button"> Step </button>
+            <button class = "run"id="runAll" type="button"> Run  </button>
+          </div>
+        </div>
+        <div id="statepane">
+          <h3> State </h3>
+            <div id = "status"> No Program Loaded </div>
+            <div id = "state"> </div>
+        </div>
+        <div id="tracepane">
+          <h3> Trace output </h3>
+            <div id = "trace">
+          </div>
+        </div>
+        </section>
+      </div>
+      <footer>
+      Site proudly generated by
+      <a href="http://jaspervdj.be/hakyll">Hakyll</a>
+      using
+      <a href="http://www.haskell.org">Haskell</a>
+      </footer>
+  
+
+</body>
+</body>
+</html>
