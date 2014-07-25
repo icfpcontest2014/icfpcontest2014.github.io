@@ -940,6 +940,7 @@ Instruction reference
         $fp := FRAME_PARENT($fp)
         $n := $n-1
       end
+      if TAG($fp) == TAG_DUM then FAULT(FRAME_MISMATCH)
       $v := FRAME_VALUE($fp, $i) ; i'th element of frame
       %s := PUSH($v,%s)          ; push onto the data stack
       %c := %c+1
@@ -1385,6 +1386,7 @@ Pascal extensions
         $fp := FRAME_PARENT($fp)
         $n := $n-1
       end
+      if TAG($fp) == TAG_DUM then FAULT(FRAME_MISMATCH)
       $v,%s := POP(%s)           ; pop value from the data stack
       FRAME_VALUE($fp, $i) := $v ; modify i'th element of frame
       %c := %c+1
