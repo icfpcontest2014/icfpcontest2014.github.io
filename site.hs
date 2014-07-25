@@ -20,7 +20,10 @@ main = hakyllWith config $ do
                     , "images/blacktocat.png"
                     , "lman.html"
                     , "game.html"
-                    , "code/local.gcc"]) $ do
+                    , "code/local.gcc"
+                    , "maps/world-classic.txt"
+                    , "maps/world-1.txt"
+                    , "maps/world-2.txt"]) $ do
         route   idRoute
         compile copyFileCompiler
 
