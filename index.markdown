@@ -5,6 +5,7 @@ title: Home
 News
 ----
 
+* The lightning round is [nearly over!](http://www.timeanddate.com/countdown/generic?iso=20140726T12&p0=1440&msg=ICFP+Programming+Contest+2014+-+End+of+Lightning+Round) Get your [submissions in](specification.html#submission-procedure) and check back here for the twist for the full round!
 * We have added some more sample maps to the [reference material](reference.html).
 * We have added some clarifications to the task specification. You can keep
 track of all the changes to the specification by watching the
