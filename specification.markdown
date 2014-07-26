@@ -361,8 +361,8 @@ At a tick when a ghost may move, it must move (unless it is surrounded on all fo
 Furthermore, a ghost cannot move in the opposite direction to its current direction,
 unless that is the only direction available (because it is surrounded on three sides by walls).
 
-Consequently, a ghost can only choose its direction at a junction
-and cannot choose to turn back on itself.
+The usual consequence of this is that a ghost chooses its direction at a
+junction and cannot choose to turn back on itself.
 A junction is a square which has at least three adjacent squares with
 no walls. For example, the following are all junctions.
 
@@ -372,8 +372,23 @@ no walls. For example, the following are all junctions.
     #####    # ##   ## ##   ## #    ## ##
              # #     # #     # #     # # 
 
-When a ghost encounters a bend, it is forced to continue around the bend.
-When a ghost encounters a dead end, it is forced to turn around.
+Usually, when a ghost encounters a bend, it is forced to continue around the
+bend. When a ghost encounters a dead end, it is forced to turn around.
+
+An exception is when a powerpill is activated when a ghost is on a bend.
+Consider the following case, where the ghost comes from above,
+and the powerpill is subsequently activated.
+
+      # #
+      # #
+    ### #
+       =#
+    #####
+
+When powerpill is activated, the ghost direction is set to up, as if it
+had come from the wall below its current position. Consequently, the ghost may
+choose to go up or left. If it goes left, this may seem like the ghost has not
+had its direction reversed ... but it has!
 
 When a ghost chooses an illegal move (or no move at all) at a junction, it is forced to
 continue in its previous direction if this is legal, and if not, then
