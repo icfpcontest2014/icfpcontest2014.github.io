@@ -365,13 +365,20 @@
 <p>The Lambda-Man can move into any adjacent square that is not occupied by a wall. An adjacent square is one that is up, down, left, or right of another.</p>
 <p>When Lambda-Man tries to choose an illegal move, he stops moving.</p>
 <p>Ghosts can only move into an adjacent square that is not occupied by a wall. At a tick when a ghost may move, it must move (unless it is surrounded on all four sides by walls). Furthermore, a ghost cannot move in the opposite direction to its current direction, unless that is the only direction available (because it is surrounded on three sides by walls).</p>
-<p>Consequently, a ghost can only choose its direction at a junction and cannot choose to turn back on itself. A junction is a square which has at least three adjacent squares with no walls. For example, the following are all junctions.</p>
+<p>The usual consequence of this is that a ghost chooses its direction at a junction and cannot choose to turn back on itself. A junction is a square which has at least three adjacent squares with no walls. For example, the following are all junctions.</p>
 <pre><code> # #     # #             # #     # # 
 ## ##    # ##   #####   ## #    ## ##
   =      #=       =       =#      =  
 #####    # ##   ## ##   ## #    ## ##
          # #     # #     # #     # # </code></pre>
-<p>When a ghost encounters a bend, it is forced to continue around the bend. When a ghost encounters a dead end, it is forced to turn around.</p>
+<p>Usually, when a ghost encounters a bend, it is forced to continue around the bend. When a ghost encounters a dead end, it is forced to turn around.</p>
+<p>An exception is when a powerpill is activated when a ghost is on a bend. Consider the following case, where the ghost comes from above, and the powerpill is subsequently activated.</p>
+<pre><code>  # #
+  # #
+### #
+   =#
+#####</code></pre>
+<p>When powerpill is activated, the ghost direction is set to up, as if it had come from the wall below its current position. Consequently, the ghost may choose to go up or left. If it goes left, this may seem like the ghost has not had its direction reversed … but it has!</p>
 <p>When a ghost chooses an illegal move (or no move at all) at a junction, it is forced to continue in its previous direction if this is legal, and if not, then the first legal direction out of up, right, down, and left, in that order.</p>
 <p>At the start of the game, all ghosts and Lambdaman face down.</p>
 <h2 id="tournament-scoring">Tournament scoring</h2>
