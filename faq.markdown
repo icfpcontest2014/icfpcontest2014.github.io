@@ -25,3 +25,16 @@ title: FAQ
     **Answer:** Only on the ticks when the ghost is scheduled to move. We have
     updated that paragraph in the spec to be less confusing.
 
+ 3.  **Question:** The JavaScript simulator just stops and I see an error
+     message in the browser debug console. What's up?
+
+     **Answer:** You've managed to tickle an error case in the simulator
+     and it's thrown an exception and then stopped. Report it and we'll try
+     and fix it.
+
+     For example:
+
+         World/Simulator.hs:290:9-36: Irrefutable pattern failed for pattern Data.Maybe.Just n
+
+     This one appeared in the game simulator between 3am and 10am UK time
+     because we accidentally left some debug code in the sim, sorry!
