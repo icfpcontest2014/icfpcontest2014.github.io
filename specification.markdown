@@ -1722,6 +1722,8 @@ million CONS cells to be used by the Lambda-Man AI in the heap. Again,
 trying to allocate memory over this limit resulted in an error, probably
 results in catastrophic failure.
 
+The program for Lambda-Man´s AI was limited to 1048576 instructions.
+
 Errors
 ------
 
