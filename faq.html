@@ -28,6 +28,11 @@
 <p><strong>Answer:</strong> 127. In this extremely rare scenario, the fruit basically is pushed right into Lambda-Man’s mouth, and doesn’t slow him down. This is because he schedules his next move right after he moves, which is before the fruit appears, so he technically isn’t eating at that stage.</p></li>
 <li><p><strong>Question:</strong> Do ghost programs get executed every tick or just the ticks when the ghost is scheduled to move?</p>
 <p><strong>Answer:</strong> Only on the ticks when the ghost is scheduled to move. We have updated that paragraph in the spec to be less confusing.</p></li>
+<li><p><strong>Question:</strong> The JavaScript simulator just stops and I see an error message in the browser debug console. What’s up?</p>
+<p><strong>Answer:</strong> You’ve managed to tickle an error case in the simulator and it’s thrown an exception and then stopped. Report it and we’ll try and fix it.</p>
+<p>For example:</p>
+<pre><code> World/Simulator.hs:290:9-36: Irrefutable pattern failed for pattern Data.Maybe.Just n</code></pre>
+<p>This one appeared in the game simulator between 3am and 10am UK time because we accidentally left some debug code in the sim, sorry!</p></li>
 </ol>
         </section>
       </div>
