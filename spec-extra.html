@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <title>ICFP Programming Contest 2014 - Additional Specification</title>
+        <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen" />
+        <link rel="stylesheet" type="text/css" href="stylesheets/pygment_trac.css" media="screen" />
+        <link rel="stylesheet" type="text/css" href="stylesheets/print.css" media="print" />
+    </head>
+    <body>
+      <header>
+        <div class="container">
+          <h1>ICFP Programming Contest 2014</h1>
+          <h2></h2>
+
+        </div>
+      </header>
+      <div class="container">
+        <section id="main_content">
+          <h1>Additional Specification</h1>
+
+          <p>This specification is in addition to the <a href="http://icfpcontest.org/specification.html">original specification</a> that was used in the lightning round.</p>
+<h2 id="full-round-summary">Full Round Summary</h2>
+<p>For the full round we will stick to the “classic” version of the game where it is just a single Lambda-Man against the ghosts, but your challenge now is to write an AI for the Lambda-Man <em>and</em> AIs for the ghosts. Your Lambda-Man AI will play matches against ghost AIs from an opposing team.</p>
+<p>You may submit up to 4 ghost AI programs.</p>
+<p>Each match is made up of two encounters with another team:</p>
+<ul>
+<li>once with the ghosts running your ghost AI code and Lambda-Man running your opponent’s Lambda-Man AI code, and</li>
+<li>once with the ghosts running your opponent’s ghost AI code and Lambda-Man running your Lambda-Man AI code.</li>
+</ul>
+<p>Each encounter in a match will use the same map supplied by the judges. The Lambda-Man who scores the highest in a match wins against the other.</p>
+<p>The full round runs for the full 72 hours of the competition, so submissions must be in before <a href="http://www.timeanddate.com/countdown/generic?p0=1440&amp;iso=20140728T12&amp;msg=ICFP%20Programming%20Contest%202014%20Full%20Round">12:00 UTC 28/07/2014</a>.</p>
+<h2 id="tournament-scoring">Tournament scoring</h2>
+<p>The overall winners for the full round are then determined using a tournament algorithm based on individual win/lose/draw encounters between teams. Later tournament rounds will use harder maps to help distinguish good teams. The score within games may be used for tie-breaking.</p>
+<h2 id="suggest-your-own-maps">Suggest your own maps</h2>
+<p>We invite you to submit maps for us to consider. We may choose to use them in the latter stages of the tournament, or indeed to help score the lightning round.</p>
+<h2 id="the-undocumented-second-argument">The undocumented second argument</h2>
+<p>We have discovered what the undocumented second argument to the Lambda-Man initialisation function is. It turns out to be an encoding of the ghost programs!</p>
+<p>The mind boggles at why they included this little feature. Our best guess is that it was part of an attempt by the Lambda-Man AI authors to get one over on their rivals in the ghost AI team. Perhaps out of work hours they competed by running the game with AI against AI with no human player.</p>
+<p>So the second argument is a list containing the program for each ghost in the map. Note that there may be duplicates in this list because there can be more ghosts than ghost programs, in which case ghosts are assigned programs cyclically.</p>
+<p>Each program is a list of instructions. Each instruction is encoded as follows:</p>
+<ul>
+<li>(opcode, args)</li>
+</ul>
+<p>That is, a pair consisting of an integer code and a list of arguments.</p>
+<p>The opcode is the enumeration from 0 of the instructions, in the order defined in the GHC spec.</p>
+<table>
+<thead>
+<tr class="header">
+<th align="left">Instruction</th>
+<th align="left">Opcode</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">MOV</td>
+<td align="left">0</td>
+</tr>
+<tr class="even">
+<td align="left">INC</td>
+<td align="left">1</td>
+</tr>
+<tr class="odd">
+<td align="left">DEC</td>
+<td align="left">2</td>
+</tr>
+<tr class="even">
+<td align="left">ADD</td>
+<td align="left">3</td>
+</tr>
+<tr class="odd">
+<td align="left">SUB</td>
+<td align="left">4</td>
+</tr>
+<tr class="even">
+<td align="left">MUL</td>
+<td align="left">5</td>
+</tr>
+<tr class="odd">
+<td align="left">DIV</td>
+<td align="left">6</td>
+</tr>
+<tr class="even">
+<td align="left">AND</td>
+<td align="left">7</td>
+</tr>
+<tr class="odd">
+<td align="left">OR</td>
+<td align="left">8</td>
+</tr>
+<tr class="even">
+<td align="left">XOR</td>
+<td align="left">9</td>
+</tr>
+<tr class="odd">
+<td align="left">JLT</td>
+<td align="left">10</td>
+</tr>
+<tr class="even">
+<td align="left">JEQ</td>
+<td align="left">11</td>
+</tr>
+<tr class="odd">
+<td align="left">JGT</td>
+<td align="left">12</td>
+</tr>
+<tr class="even">
+<td align="left">INT</td>
+<td align="left">13</td>
+</tr>
+<tr class="odd">
+<td align="left">HLT</td>
+<td align="left">14</td>
+</tr>
+</tbody>
+</table>
+<p>The list of arguments depends on the instruction. Each argument is encoded in one of the following forms</p>
+<table>
+<thead>
+<tr class="header">
+<th align="left">Instruction argument</th>
+<th align="left">Encoding</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">register</td>
+<td align="left">(0, register number as an integer)</td>
+</tr>
+<tr class="even">
+<td align="left">register-indirect</td>
+<td align="left">(1, register number as an integer)</td>
+</tr>
+<tr class="odd">
+<td align="left">constant</td>
+<td align="left">(2, constant as an integer)</td>
+</tr>
+<tr class="even">
+<td align="left">address</td>
+<td align="left">(3, address as an integer)</td>
+</tr>
+<tr class="odd">
+<td align="left">INT number</td>
+<td align="left">interrupt number as an integer</td>
+</tr>
+<tr class="even">
+<td align="left">JLT/JEQ/JGT target address</td>
+<td align="left">address as an integer</td>
+</tr>
+</tbody>
+</table>
+<p>The register number is 0 to 7 for registers A to H and 8 for the PC register.</p>
+<p>For example, <code>HLT</code> is simply <code>CONS 14 0</code>, that is op code 14 with the empty list of arguments ([] being encoded as 0). While <code>MOV A [B]</code> is encoded as</p>
+<pre><code>CONS 0                       -- the MOV opcode
+     (CONS (CONS 0 0)        -- first arg, reg A
+           (CONS (CONS 1 1)  -- second arg, memory refrence [B]
+                  0))        -- the end of the list []</code></pre>
+<h1 id="submission-procedure">Submission procedure</h1>
+<p>The submission procedure is the same as for the lightning round except that there are extra files to include in your submission.</p>
+<ul>
+<li><a href="https://docs.google.com/forms/d/18mRokmlD3woUDuyi-VkCavIBtmKlXRgUcuViOduVm90/viewform">Submission form</a></li>
+</ul>
+<h2 id="solution-format">Solution format</h2>
+<p>For the full round, your submission file (.zip or .tar.gz) should have the following format:</p>
+<ul>
+<li>Subdirectory <code>solution</code> that contains your solution files:
+<ul>
+<li><code>lambdaman.gcc</code></li>
+<li><code>ghost0.ghc</code></li>
+<li><code>ghost1.ghc</code> (optional)</li>
+<li><code>ghost2.ghc</code> (optional)</li>
+<li><code>ghost3.ghc</code> (optional)</li>
+</ul></li>
+</ul>
+<p>You can submit between 1 and 4 ghost programs. Please number them sequentially.</p>
+<ul>
+<li><p>An optional <code>maps</code> subdirectory that contains any map files you wish to suggest. These should all be valid map files with <code>.txt</code> file extensions.</p></li>
+<li><p>Subdirectory <code>code</code> with the source code you wrote to help you prepare your solution and any auxiliary material that can be helpful to the judges to build your code. You should include a <code>README</code> file here with any documentation/description of your solution that you wish to share with the judges.</p></li>
+</ul>
+<p>If you submit maps you may also like to tell us what you like about your suggestion.</p>
+        </section>
+      </div>
+      <footer>
+      Site proudly generated by
+      <a href="http://jaspervdj.be/hakyll">Hakyll</a>
+      using
+      <a href="http://www.haskell.org">Haskell</a>
+      </footer>
+      <script>
+          (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+          (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+          })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+          ga('create', 'UA-53160382-1', 'auto');
+          ga('send', 'pageview');
+
+      </script>
+  </body>
+</html>
