@@ -1730,9 +1730,14 @@ to run up to 3072 * 10^3 instructions. We assume that taking any more
 instructions than this would result in catastrophic failure.
 
 The main RAM was—for its time—impressively large, and was able to hold 10
-million CONS cells to be used by the Lambda-Man AI in the heap. Again,
-trying to allocate memory over this limit resulted in an error, probably
-results in catastrophic failure.
+million CONS cells to be used by the Lambda-Man AI.
+The three stacks and the heap shared the RAM space.
+The data stack used one CONS cell for every two data values.
+The control stack used one CONS cell per entry.
+Each environment frame used one CONS cell plus half of the frame size
+(rounded down).
+Again, trying to allocate memory over this limit resulted in an error,
+which probably lead to catastrophic failure.
 
 The program for Lambda-Man´s AI was limited to 1048576 instructions.
 
