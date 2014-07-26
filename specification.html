@@ -474,7 +474,7 @@
 <li><p><code>MUL dest,src</code></p>
 <p>Multiply the value of <code>src</code> by the value of <code>dest</code> and store the result in <code>dest</code>. <code>dest</code> may not be a constant or the register <code>PC</code>.</p></li>
 <li><p><code>DIV dest,src</code></p>
-<p>Compute the integer quotient of <code>dest</code> by the value of <code>src</code>, and store the result in <code>dest</code>. <code>dest</code> may not be a constant or the register <code>PC</code>. Results in an error if the value of <code>src</code> is 0.</p></li>
+<p>Compute the integer division (rounding down towards negative infinity) of <code>dest</code> by the value of <code>src</code>, and store the result in <code>dest</code>. <code>dest</code> may not be a constant or the register <code>PC</code>. Results in an error if the value of <code>src</code> is 0.</p></li>
 <li><p><code>AND dest,src</code></p>
 <p>Bitwise AND the value of <code>dest</code> and the value of <code>src</code>, storing the result in <code>dest</code>. <code>dest</code> may not be a constant or the register <code>PC</code>.</p></li>
 <li><p><code>OR dest,src</code></p>
@@ -778,6 +778,7 @@ DIV - integer division
 
 Synopsis: pop two integers off the data stack;
           push the result of the integer division of one of the other
+          (integer division rounds down towards negative infinity)
 Syntax: DIV
 Effect:
   $y,%s := POP(%s)
