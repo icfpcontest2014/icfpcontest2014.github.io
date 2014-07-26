@@ -576,8 +576,8 @@ The GHC is able to execute the following instructions:
     
  *  `DIV dest,src`
     
-    Compute the integer quotient of `dest` by the value of `src`, and store the
-    result in `dest`.
+    Compute the integer division (rounding down towards negative infinity)
+    of `dest` by the value of `src`, and store the result in `dest`.
     `dest` may not be a constant or the register `PC`.
     Results in an error if the value of `src` is 0.
     
@@ -1019,6 +1019,7 @@ Instruction reference
 
     Synopsis: pop two integers off the data stack;
               push the result of the integer division of one of the other
+              (integer division rounds down towards negative infinity)
     Syntax: DIV
     Effect:
       $y,%s := POP(%s)
