@@ -104,15 +104,11 @@ In the remainder of this spec, you will find:
 
   * The complete description of the
     [Lambda-Man game rules](#the-lambda-man-game-rules);
-
   * The details of [how your solution will be scored](#scoring);
-
   * The description of the
     [microcontroller used for the ghost AIs](#ghost-cpu-ghc);
-
   * The description of the
     [processor used for the Lambda-Man AI](#lambda-man-cpu);
-
   * Details on [how to submit your solution](#submission-procedure).
 
 Reference Material
@@ -1816,7 +1812,6 @@ Solution format
 Your submission file (.zip or .tar.gz) should have the following format:
 
  * Subdirectory `solution` that contains your solution file: `lambdaman.gcc`.
-
  * Subdirectory `code`  with the source code you wrote to help you prepare
    your solution and any auxiliary material that can be helpful to the judges
    to build your code. You should include a `README` file in this subdirectory with any
