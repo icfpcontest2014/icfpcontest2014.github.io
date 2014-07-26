@@ -1387,6 +1387,7 @@ step:
 <p>The Lambda-Man CPU had a clock speed of 3.072 MHz. Each processor cycle executed exactly one instruction, and each invocation of the Lambda-Man AI was allowed to run for one second before a move was made. In addition, the Lambda-Man AI was given one minute of time for initialization, before the game began.</p>
 <p>From this it follows that each invocation of the AI, before a move, was allowed to run up to 3072 * 10^3 instructions. We assume that taking any more instructions than this would result in catastrophic failure.</p>
 <p>The main RAM was—for its time—impressively large, and was able to hold 10 million CONS cells to be used by the Lambda-Man AI in the heap. Again, trying to allocate memory over this limit resulted in an error, probably results in catastrophic failure.</p>
+<p>The program for Lambda-Man´s AI was limited to 1048576 instructions.</p>
 <h2 id="errors-1">Errors</h2>
 <p>During the game, if an instruction causes an error then execution halts and no result is returned. In this case Lambda-Man’s requested move will be the same as its previous move.</p>
 <h1 id="submission-procedure">Submission procedure</h1>
