@@ -31,7 +31,8 @@ main = hakyllWith config $ do
     match (fromList ["index.markdown"
                     ,"specification.markdown"
                     ,"reference.markdown"
-                    ,"faq.markdown"]) $ do
+                    ,"faq.markdown"
+                    ,"spec-extra.markdown"]) $ do
         route   $ setExtension "html"
         compile $ pandocCompiler
             >>= loadAndApplyTemplate "templates/default.html" defaultContext
