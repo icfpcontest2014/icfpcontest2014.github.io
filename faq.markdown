@@ -44,3 +44,12 @@ title: FAQ
 
      **Answer** You're probably trying to load main in the Lambda-Man
      simulator. The main function is initialised in the [game simulator](http://icfpcontest.org/game.html).
+
+ 5. **Question:** In this full round specification, does Lambda-Man have to
+    *complete the level fully* to score points? For example, what happens with
+    the score if Lambda-man has been eaten three times by ghosts?
+
+    **Answer:** No, Lambda-Man can score points whether he wins or loses a game.
+    Only the score matters, not whether Lambda-Man completes the level or not.
+    The spec has been updated to clarify this point.
+

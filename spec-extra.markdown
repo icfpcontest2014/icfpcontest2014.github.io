@@ -21,7 +21,11 @@ Each match is made up of two encounters with another team:
  * once with the ghosts running your opponent's ghost AI code and Lambda-Man
    running your Lambda-Man AI code.
 
-Each encounter in a match will use the same map supplied by the judges. The Lambda-Man who scores the highest in a match wins against the other.
+Each encounter in a match will use the same map supplied by the judges.
+
+The Lambda-Man who scores the highest in a match wins against the other. Note
+that whether Lambda-Man completes the level or not does not matter, only the
+score is important.
 
 The full round runs for the full 72 hours of the competition, so submissions
 must be in before [12:00 UTC 28/07/2014](http://www.timeanddate.com/countdown/generic?p0=1440&iso=20140728T12&msg=ICFP%20Programming%20Contest%202014%20Full%20Round).
