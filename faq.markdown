@@ -38,3 +38,9 @@ title: FAQ
 
      This one appeared in the game simulator between 3am and 10am UK time
      because we accidentally left some debug code in the sim, sorry!
+
+ 4.  **Question:** How do I access the world's iniital state? I tried `LD 0 0`
+     in main, but I get an error!
+
+     **Answer** You're probably trying to load main in the Lambda-Man
+     simulator. The main function is initialised in the [game simulator](http://icfpcontest/game.html).
