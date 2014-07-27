@@ -5,7 +5,7 @@ title: Home
 News
 ----
 
-* The HALL OF FAME now has some new maps, an easy and one hard one. I ain't afraid of no ghosts!
+* The [HALL OF FAME](http://94.173.40.148/) now has some new maps, an easy and one hard one. I ain't afraid of no ghosts!
 * Wow! You can now enter the [HALL OF FAME](http://94.173.40.148/) by submitting your Lambda-Man AIs! (experimental ... please be gentle!)
 * [Sunday 27th 13:45 UTC] We have updated the reference implementation to correct a [subtle bug in the mechanics](https://github.com/icfpcontest2014/icfpcontest2014.github.io/commit/12fc72d6082820c2035f1da28dd9dd718fb3db77), so it should now be correct with respect to the specification.
 * Great news, we've uncovered more dusty '80s documents and have more fun for you! See the [additional task specification for the full round](spec-extra.html). This is a supplement to the existing [base specification](specification.html).
