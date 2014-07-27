@@ -33,6 +33,8 @@
 <p>For example:</p>
 <pre><code> World/Simulator.hs:290:9-36: Irrefutable pattern failed for pattern Data.Maybe.Just n</code></pre>
 <p>This one appeared in the game simulator between 3am and 10am UK time because we accidentally left some debug code in the sim, sorry!</p></li>
+<li><p><strong>Question:</strong> How do I access the world’s iniital state? I tried <code>LD 0 0</code> in main, but I get an error!</p>
+<p><strong>Answer</strong> You’re probably trying to load main in the Lambda-Man simulator. The main function is initialised in the <a href="http://icfpcontest/game.html">game simulator</a>.</p></li>
 </ol>
         </section>
       </div>
