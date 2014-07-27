@@ -10,27 +10,27 @@
   var height = 20
 
   // globals
-  var broken
+  var running
   var state
 
   function load (){
     // Set globals
-    broken = true
-    $("#break").unbind().html("Run").attr("id", "runAll")
-    $("#runAll").click(run)
+    running = false
+    $("#trace").empty()
+    $("#runbreak").html(" Run ")
+
     var lambdaman = $("#lambda").val()
     var map       = $("#map").val()
     var ghosts    = $(".g").map(function(){return this.value}).get()
     state = loadGame(map, lambdaman, ghosts)
     if (state.error != null){
+      $(".run").attr("disabled", "disabled")
       updateStatus("Error: " + state.error) 
     }
     else {
       $(".run").removeAttr("disabled")
-      $("#trace").empty()
-      $("#status").empty()
-      setupBoard()
       updateStatus("Program Loaded")
+      setupBoard()
       updateBoard(true)
       updateState()
     }
@@ -86,18 +86,45 @@
 
   function step(){
     runStep()
-    updateStatus("Single step")
+    if (!state.gameOver) {
+      updateStatus("Single step")
+    }
+  }
+
+  function runbreak(){
+    if (running) {
+      dobreak()
+    } else {
+      run()
+    }
+  }
+
+  function run(){
+    running = true
+    $("#step").attr("disabled", "disabled")
+    $("#runbreak").html(" Break ")
+    updateStatus("Game running")
+    runLoop()
+  }
+
+  function dobreak(){
+    running = false
+    $(".run").removeAttr("disabled")
+    $("#runbreak").html(" Run ")
+    updateBoard(false)
+    updateStatus("Broken by user")
+    updateState()
   }
 
   function runStep(){
     stepProg(state)
-    if (state.gameOver == true){
-      breakRun()
+    if (state.gameOver) {
+      running = false
       victor = state.gameWin ? "You won" : "You lost"
       $(".run").attr("disabled", "disabled") 
-      updateState()
       updateBoard(false)
       updateStatus("Game Over: " + victor)
+      updateState()
     }
     else {
       updateState()
@@ -105,30 +132,14 @@
     } 
    }
 
-  function run(){
-    broken = false
-    $("#runAll").html("Break").unbind().attr("id", "break")
-    $("#break").click(breakRun)
-    updateStatus("Game running")
-    runLoop()
-  }
-
   function runLoop(){
-    if (! broken){
+    if (running) {
       runStep()
       setTimeout(runLoop, 50)
     }
   }
-    
-  function breakRun(){
-    broken = true
-    $("#break").unbind().html("Run").attr("id", "runAll")
-    updateStatus("Broken by user")
-    updateState()
-    $("#runAll").click(run)
-  }
 
-  function updateState(){
+  function updateState() {
     $("#lives").html(state.lives)
     $("#ticks").html(state.ticks)
     $("#score").html(state.score)
@@ -138,7 +149,7 @@
       }
     }
   }
-  
+
   function updateStatus(s){
     $("#status").html(s)
   }
@@ -151,7 +162,7 @@
     $(".run").attr("disabled", "disabled")
     $("#load").click(load)
     $("#step").click(step)
-    $("#runAll").click(run)
+    $("#runbreak").click(runbreak)
   })
 
   
@@ -233,7 +244,7 @@ hlt
         <div id="buttons">
           <button id="load" type="button"> Load </button>
           <button class = "run" id="step" type="button"> Step </button>
-          <button class = "run"id="runAll" type="button"> Run  </button>
+          <button class = "run" id="runbreak" type="button"> Run  </button>
         </div>
         <section id="sim">
           <h2> Game </h2>
