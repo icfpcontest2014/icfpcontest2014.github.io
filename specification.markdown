@@ -1297,7 +1297,7 @@ Instruction reference
 
     STOP - terminate co-processor execution
 
-    Synopsis: terminate co-processor execution and signal the main proessor.
+    Synopsis: terminate co-processor execution and signal the main processor.
     Syntax:  STOP
     Effect:
       MACHINE_STOP
@@ -1645,7 +1645,7 @@ is encoded as
     the active power pill, if any. It is 0 when no power pill is active.
       * 0: standard mode;
       * n > 0: power pill mode: the number of game ticks remaining while the
-               power pill will will be active
+               power pill will be active
 
     The status of all the ghosts is a list with the status for each ghost.
     The list is in the order of the ghost number, so each ghost always appears
@@ -1671,7 +1671,7 @@ is encoded as
     the current fruit, if any.
       * 0: no fruit present;
       * n > 0: fruit present: the number of game ticks remaining while the
-               fruit will will be present.
+               fruit will be present.
     
     Lambda-Man's move is a direction as encoded above.
 
