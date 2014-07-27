@@ -1752,8 +1752,9 @@ Errors
 
 During the game, if an instruction causes an error then execution halts and no
 result is returned. In this case Lambda-Man's requested move will be the same
-as its previous move.
-
+as its previous move. The AI state remains unchanged, thus the next execution
+of the AI step function will be passed this AI state (but obviously the world
+is updated).
 
 Submission procedure
 ====================
