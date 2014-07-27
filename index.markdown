@@ -5,6 +5,7 @@ title: Home
 News
 ----
 
+* [Sunday 27th 13:45 UTC] We have updated the reference implementation to correct a [subtle bug in the mechanics](https://github.com/icfpcontest2014/icfpcontest2014.github.io/commit/12fc72d6082820c2035f1da28dd9dd718fb3db77), so it should now be correct with respect to the specification.
 * Great news, we've uncovered more dusty '80s documents and have more fun for you! See the [additional task specification for the full round](spec-extra.html). This is a supplement to the existing [base specification](specification.html).
 * The lightning round is [nearly over!](http://www.timeanddate.com/countdown/generic?iso=20140726T12&p0=1440&msg=ICFP+Programming+Contest+2014+-+End+of+Lightning+Round) Get your [submissions in](specification.html#submission-procedure) and check back here for the twist for the full round!
 * We have added some more sample maps to the [reference material](reference.html).
