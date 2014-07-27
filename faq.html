@@ -35,6 +35,8 @@
 <p>This one appeared in the game simulator between 3am and 10am UK time because we accidentally left some debug code in the sim, sorry!</p></li>
 <li><p><strong>Question:</strong> How do I access the world’s iniital state? I tried <code>LD 0 0</code> in main, but I get an error!</p>
 <p><strong>Answer</strong> You’re probably trying to load main in the Lambda-Man simulator. The main function is initialised in the <a href="http://icfpcontest.org/game.html">game simulator</a>.</p></li>
+<li><p><strong>Question:</strong> In this full round specification, does Lambda-Man have to <em>complete the level fully</em> to score points? For example, what happens with the score if Lambda-man has been eaten three times by ghosts?</p>
+<p><strong>Answer:</strong> No, Lambda-Man can score points whether he wins or loses a game. Only the score matters, not whether Lambda-Man completes the level or not. The spec has been updated to clarify this point.</p></li>
 </ol>
         </section>
       </div>
