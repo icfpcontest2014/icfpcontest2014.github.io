@@ -43,4 +43,4 @@ title: FAQ
      in main, but I get an error!
 
      **Answer** You're probably trying to load main in the Lambda-Man
-     simulator. The main function is initialised in the [game simulator](http://icfpcontest/game.html).
+     simulator. The main function is initialised in the [game simulator](http://icfpcontest.org/game.html).
