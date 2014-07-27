@@ -1550,6 +1550,12 @@ beginning of the program code. Whether the main function takes any arguments
 and what the return type is depend on the application. Fortunately we have the
 document that explains what these are for the Lambda-Man AI.
 
+Though we never found the ABI document, we believe that in the standard ABI the
+function calling convention was to put function arguments in the environment
+(rather than on the stack), while the single function result value is returned
+on the top of the stack. The main processor will expect that all the entry
+points it invokes (including the main function) follow this calling convention.
+
 Lambda-Man AI interface
 -----------------------
 
