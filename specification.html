@@ -1398,7 +1398,7 @@ step:
 <p>The main RAM was—for its time—impressively large, and was able to hold 10 million CONS cells to be used by the Lambda-Man AI. The three stacks and the heap shared the RAM space. The data stack used one CONS cell for every two data values. The control stack used one CONS cell per entry. Each environment frame used one CONS cell plus half of the frame size (rounded down). Again, trying to allocate memory over this limit resulted in an error, which probably lead to catastrophic failure.</p>
 <p>The program for Lambda-Man´s AI was limited to 1048576 instructions.</p>
 <h2 id="errors-1">Errors</h2>
-<p>During the game, if an instruction causes an error then execution halts and no result is returned. In this case Lambda-Man’s requested move will be the same as its previous move.</p>
+<p>During the game, if an instruction causes an error then execution halts and no result is returned. In this case Lambda-Man’s requested move will be the same as its previous move. The AI state remains unchanged, thus the next execution of the AI step function will be passed this AI state (but obviously the world is updated).</p>
 <h1 id="submission-procedure">Submission procedure</h1>
 <p>You do not need to register to enter the competition, but you do need to fill in some details to submit a solution.</p>
 <p>Submission is by filling in a web form with your team details, and a URL and SHA1 checksum of a .zip or .tar.gz file containing your solution. The judges will download the file containing your solution after the closing deadline and compare its SHA1 checksum with the one you provided.</p>
