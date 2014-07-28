@@ -5,6 +5,7 @@ title: Home
 News
 ----
 
+* The full round is [nearly over](http://www.timeanddate.com/countdown/generic?iso=20140728T12&p0=1440&msg=ICFP+Programming+Contest+2014+-+End+of+Full+Round)! Time to get your [submission in](http://icfpcontest.org/spec-extra.html#submission-procedure)! Remember, you can update your submission up until the final deadline.
 * The [HALL OF FAME](http://94.173.40.148/) now has some new maps, an easy and one hard one. I ain't afraid of no ghosts!
 * Wow! You can now enter the [HALL OF FAME](http://94.173.40.148/) by submitting your Lambda-Man AIs! (experimental ... please be gentle!)
 * [Sunday 27th 13:45 UTC] We have updated the reference implementation to correct a [subtle bug in the mechanics](https://github.com/icfpcontest2014/icfpcontest2014.github.io/commit/12fc72d6082820c2035f1da28dd9dd718fb3db77), so it should now be correct with respect to the specification.
