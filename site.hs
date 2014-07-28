@@ -9,7 +9,8 @@ main = hakyllWith config $ do
     match "templates/*" $ compile templateCompiler
 
     match (fromList ["stylesheets/stylesheet.css"
-                    ,"stylesheets/stylesheet2.css"]) $ do
+                    ,"stylesheets/stylesheet2.css"
+                    ,"stylesheets/hall-of-fame.css"]) $ do
         route   idRoute
         compile compressCssCompiler
 
@@ -24,7 +25,9 @@ main = hakyllWith config $ do
                     , "code/goto.gcc"
                     , "maps/world-classic.txt"
                     , "maps/world-1.txt"
-                    , "maps/world-2.txt"]) $ do
+                    , "maps/world-2.txt"
+                    , "hall-of-fame.html"
+                    , "javascripts/hall-of-fame.js"]) $ do
         route   idRoute
         compile copyFileCompiler
 

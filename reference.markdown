@@ -4,7 +4,7 @@ title: Reference Material
 
 * [The Game mechanics](game.html)
 * [The Lambda-Man CPU simulator](lman.html)
-* [HALL OF FAME](http://94.173.40.148/) (experimental: please be gentle!)
+* [HALL OF FAME](hall-of-fame.html) (no longer accepting entries)
 
 
 GCC Programs
