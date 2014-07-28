@@ -2,9 +2,31 @@
 title: Home
 ---
 
+**GAME OVER!**
+--------------
+
+Good news! Amongst the dusty archives we found the original technical report
+that must have inspired the design of the quirky Lambda-Man CPU. You can find
+a [scan of this report online](http://www.cs.ncl.ac.uk/publications/trs/papers/129.pdf).
+So the Lambda-Man CPU turns out to be a hardware implementation of the
+[SECD machine](https://en.wikipedia.org/wiki/SECD_machine). We did wonder why
+the CPU registers were called `%s` `%e` `%c` and `%d`!
+
+We will be announcing the final results (aka HALL OF FAME) of the competition
+at [ICFP (Gothenburg, Sweden; September 1–3, 2014)](http://icfpconference.org/icfp2014/index.html). We will then publish the final rankings including the team home
+pages you supplied.
+
+In the meantime we encourage you to publish your solutions and write-ups, and
+submit links to them on the [icfpcontest subreddit](http://www.reddit.com/r/icfpcontest).
+
+We also plan to open source our reference implementation and the HALL OF FAME
+server code after the results have been announced. The judges decisions
+(including quirks and bugs in our implementation) are final.
+
 News
 ----
 
+* **GAME OVER!**
 * The full round is [nearly over](http://www.timeanddate.com/countdown/generic?iso=20140728T12&p0=1440&msg=ICFP+Programming+Contest+2014+-+End+of+Full+Round)! Time to get your [submission in](http://icfpcontest.org/spec-extra.html#submission-procedure)! Remember, you can update your submission up until the final deadline.
 * The [HALL OF FAME](http://94.173.40.148/) now has some new maps, an easy and one hard one. I ain't afraid of no ghosts!
 * Wow! You can now enter the [HALL OF FAME](http://94.173.40.148/) by submitting your Lambda-Man AIs! (experimental ... please be gentle!)
