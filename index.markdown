@@ -101,8 +101,8 @@ The contest organisers are: Nicolas Wu (co-chair) (zenzike), Duncan Coutts
 Martin Lester (mariusz), and Marcelo Sousa (mabs).
 
 <div style="background: white; width: 890px">
-<img style="padding: 10px" src="http://www.cs.ox.ac.uk//images/CompSci_logo_landscapeL_rgb_corrected.jpg" height="130" alt="University of Oxford, Department of Computer Science"/>
-<img style="padding: 10px" src="http://www.well-typed.com/img/wtlogo-large.png" alt="Well-Typed LLP"/>
+<a href="http://www.cs.ox.ac.uk/"><img style="padding: 10px" src="http://www.cs.ox.ac.uk/images/CompSci_logo_landscapeL_rgb_corrected.jpg" height="130" alt="University of Oxford, Department of Computer Science"/></a>
+<a href="http://www.well-typed.com/"><img style="padding: 10px" src="http://www.well-typed.com/img/wtlogo-large.png" alt="Well-Typed LLP"/></a>
 </div>
 
 You can also reach us privately by email: [icfpcontest2014-pub@googlegroups.com](mailto:icfpcontest2014-pub@googlegroups.com)
