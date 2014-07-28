@@ -22,4 +22,4 @@ Maps
 * [world-classic.txt](maps/world-classic.txt)
 * [world-1.txt](maps/world-1.txt)
 * [world-2.txt](maps/world-2.txt)
-
+* [ghostbusters.txt](maps/ghostbusters.txt)
