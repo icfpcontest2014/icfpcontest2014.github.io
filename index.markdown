@@ -26,6 +26,8 @@ server code after the results have been announced. The judges decisions
 News
 ----
 
+* The competition has now been judged. We have contacted the winners: the formal announcment will be made at [ICFP](http://icfpconference.org).
+  Thanks to all contestants for their participation!
 * **GAME OVER!**
 * The full round is [nearly over](http://www.timeanddate.com/countdown/generic?iso=20140728T12&p0=1440&msg=ICFP+Programming+Contest+2014+-+End+of+Full+Round)! Time to get your [submission in](http://icfpcontest.org/spec-extra.html#submission-procedure)! Remember, you can update your submission up until the final deadline.
 * The [HALL OF FAME](hall-of-fame.html) now has some new maps, an easy and one hard one. I ain't afraid of no ghosts!
