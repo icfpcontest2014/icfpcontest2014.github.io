@@ -1,8 +1,6 @@
 ---
 title: Results
 ---
-Results
-=======
 
 After hours of judging, the judges declare that:
 
