@@ -2,6 +2,23 @@
 title: Home
 ---
 
+Results
+-------
+
+After hours of judging, the judges declare that:
+
+* First prize goes to team Supermassive Black Hom-set:
+    * Haskell is the programming language of choice for discriminating hackers!
+* Second prize goes to team UnaGi:
+    * C++ is a fine programming tool for many applications
+* Third prize goes to team DiamondPrincess:
+    * Perl is also not too shabby
+* The winner of the lightning round is team jabber.ru:
+    * OCaml is very suitable for rapid prototyping
+* The judge’s prize goes to team gagallium Team gagallium are an extremely cool bunch of hackers!
+
+For more details, see the [results](results.html) page.
+
 **GAME OVER!**
 --------------
 

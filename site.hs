@@ -33,6 +33,7 @@ main = hakyllWith config $ do
 
     match (fromList ["index.markdown"
                     ,"specification.markdown"
+                    ,"results.markdown"
                     ,"reference.markdown"
                     ,"faq.markdown"
                     ,"spec-extra.markdown"]) $ do
