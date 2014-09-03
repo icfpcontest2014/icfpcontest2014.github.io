@@ -171,6 +171,7 @@ Lightning Round Results
 Name                                                 | Score    | Languages
 ---------------------------------------------------- | -------- | ------------------------
 `jabber.ru                                         ` | 9272.78  | OCaml
+`Rhope Burn                                        ` | 8774.90  | Quiche
 `NIL                                               ` | 8360.89  | Common Lisp
 `Fixstars                                          ` | 8016.08  | C++, C
 `negainoido                                        ` | 7877.35  | ocaml, python, c like language, assembly
@@ -258,7 +259,6 @@ Name                                                 | Score    | Languages
 `Wandering Hobos                                   ` | 62.19    | clojure
 `TomatoBeans                                       ` | 60.31    | Haskell
 `PolyProg                                          ` | 11.19    | PPL
-`Rhope Burn                                        ` | 11.19    | Quiche
 `Spiltirsdag                                       ` | 11.19    | Haskell
 `dendik                                            ` | 11.19    | 
 `panela                                            ` | 11.19    | Python
