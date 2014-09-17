@@ -14,10 +14,20 @@ After hours of judging, the judges declare that:
     * OCaml is very suitable for rapid prototyping
 * The judge’s prize goes to team gagallium Team gagallium are an extremely cool bunch of hackers!
 
+A video of the announcment can be found on youtube, here:
+
+* [https://www.youtube.com/watch?v=wIuFFU8T0kI](https://www.youtube.com/watch?v=wIuFFU8T0kI)
+
 The results of the lightning and full rounds are as follows:
 
 Full Round Results
 -------------------
+
+The full round was judged based on a tournament where each team plays a series
+matches on a number of maps against each other team. A match between two teams
+is where the pacman of one team plays a game against the ghosts of the other on
+the map, and vice versa. The team with the highest score is the winner of that match.
+2 points are awarded for a win, 1 for a draw, and 0 for a loss.
 
 Team Name                                 | Score | Languages
 ----------------------------------------- | ---- | ---------------
@@ -168,6 +178,11 @@ Team Name                                 | Score | Languages
 Lightning Round Results
 -----------------------
 
+The lightning round was judged by having each team play against various house
+robots on a selection of maps. For each map, the team with the highest score is
+awarded 1000 points, and each other team is awarded their proportion of the
+highest score, times 1000. The scores were then summed.
+
 Name                                                 | Score    | Languages
 ---------------------------------------------------- | -------- | ------------------------
 `jabber.ru                                         ` | 9272.78  | OCaml
@@ -264,3 +279,8 @@ Name                                                 | Score    | Languages
 `panela                                            ` | 11.19    | Python
 `sonna*baka*na                                     ` | 11.19    | OCaml
 `taxidriver                                        ` | 11.19    | ruby
+
+Judges Prize
+------------
+
+The judges prize was awarded to the team who had the strongest ghosts, as measured by the full round scoring.

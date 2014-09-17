@@ -17,7 +17,9 @@ After hours of judging, the judges declare that:
     * OCaml is very suitable for rapid prototyping
 * The judge’s prize goes to team gagallium Team gagallium are an extremely cool bunch of hackers!
 
-For more details, see the [results](results.html) page.
+For more details, see the [results](results.html) page, or view the
+[video](https://www.youtube.com/watch?v=wIuFFU8T0kI) of the announcment made at
+ICFP.
 
 **GAME OVER!**
 --------------
